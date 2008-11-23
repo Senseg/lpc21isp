@@ -29,6 +29,7 @@ Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.c
     If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 To compile with microsoft visual studio:
 - Open console. Execute bat file from your installation, e.g.
   "c:\Program Files\Microsoft Visual Studio 9.0\VC\bin\vcvars32.bat"
