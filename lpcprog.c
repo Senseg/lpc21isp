@@ -305,6 +305,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 {
     unsigned long realsize;
     char Answer[128];
+    char ExpectedAnswer[128];
     char temp[128];
     /*const*/ char *strippedAnswer, *endPtr;
     int  strippedsize;
@@ -707,6 +708,32 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
         }
         DebugPrintf(2, "OK \n");
     }
+	else{
+		//no wiping requested: erasing sector 0 first
+        DebugPrintf(2, "Erasing sector 0 first, to invalidate checksum. ");
+        if (IspEnvironment->HalfDuplex == 0)
+          sprintf(tmpString, "P %ld %ld\r\n", 0, 0);
+        else
+            sprintf(tmpString, "P %ld %ld\n", 0, 0);
+
+        if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
+        {
+            DebugPrintf(1, "Wrong answer on Prepare-Command\n");
+            return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
+        }
+
+        if (IspEnvironment->HalfDuplex == 0)
+            sprintf(tmpString, "E %ld %ld\r\n", 0, 0);
+        else
+            sprintf(tmpString, "E %ld %ld\n", 0, 0);
+
+        if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
+        {
+            DebugPrintf(1, "Wrong answer on Erase-Command\n");
+            return (WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
+        }
+        DebugPrintf(2, "OK \n");
+	}
     while (1)
     {
         if (Sector >= LPCtypes[IspEnvironment->DetectedDevice].FlashSectors)
@@ -733,7 +760,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
             DebugPrintf(2, ".");
             fflush(stdout);
-            if (IspEnvironment->WipeDevice == 0)
+            if (IspEnvironment->WipeDevice == 0 && (Sector!=0)) //Sector 0 already erased
             {
                 if (IspEnvironment->HalfDuplex == 0)
                     sprintf(tmpString, "E %ld %ld\r\n", Sector, Sector);
@@ -1126,15 +1153,17 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             {
                 // This was not working with my LPC2214 most of the time - Herbert Demmel
                 // was: cmdstr = "G 0 A\r\n0\r";
-                cmdstr = "G 0 A\r\n0";
+                //cmdstr = "G 0 A\r\n0";
+	            sprintf(ExpectedAnswer, "G %ld A\r\n0", IspEnvironment->StartAddress);
             }
             else
             {
-                cmdstr = "G 0 A\n0\r";
+                //cmdstr = "G 0 A\n0\r";
+	            sprintf(ExpectedAnswer, "G %ld A\n0", IspEnvironment->StartAddress);
             }
 
             //if (realsize == 0 || strncmp((const char *)Answer, "G 0 A\n0\r", 8) != 0)//if (realsize == 0 || strncmp((const char *)Answer, "G 0 A\r\n0\r", 9) != 0)
-            if (realsize == 0 || strncmp((const char *)Answer, cmdstr, strlen(cmdstr)) != 0)
+            if (realsize == 0 || strncmp((const char *)Answer, /*cmdstr*/ExpectedAnswer, strlen(/*cmdstr*/ExpectedAnswer)) != 0)
             {
                 DebugPrintf(2, "Failed to run the new downloaded code: ");
                 return (FAILED_RUN + GetAndReportErrorNumber(Answer));

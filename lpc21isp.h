@@ -44,9 +44,12 @@ Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.c
 #elif defined(__APPLE__)
 #define COMPILE_FOR_LINUX
 #define COMPILED_FOR "Apple MacOS X"
-#elif defined(__FREEBSD__)
+#elif defined(__FreeBSD__)
 #define COMPILE_FOR_LINUX
 #define COMPILED_FOR "FreeBSD"
+#elif defined(__OpenBSD__)
+#define COMPILE_FOR_LINUX
+#define COMPILED_FOR "OpenBSD"
 #else
 #define COMPILE_FOR_LINUX
 #define COMPILED_FOR "Linux"
@@ -101,7 +104,11 @@ extern struct termios keyboard_origtty;
 #include <stdarg.h>
 #include <time.h>
 #if defined (COMPILE_FOR_LINUX)
+#if defined(__OpenBSD__)
+#include <errno.h>
+#else
 #include <sys/errno.h>
+#endif
 #endif
 
 #if defined COMPILE_FOR_LPC21
