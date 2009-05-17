@@ -257,20 +257,25 @@ Change-History:
 1.63   2008-11-23 Martin Maurer
                   Changed to GNU Lesser General Public License
 1.64   2009-01-19 Steve Franks
-	        __FREEBSD__ changed to __FreeBSD__ at some point, plus other com port fixes
+                  __FREEBSD__ changed to __FreeBSD__ at some point, plus other com port fixes
 1.65   2009-03-26 Vito Marolda
                   Added pre-erasure of sector 0 to invalidate checksum before starting
-				  modification of the other sectors, so that the bootloader restarts
-				  if programming gets aborted while writing on a non-empty part.
+                  modification of the other sectors, so that the bootloader restarts
+                  if programming gets aborted while writing on a non-empty part.
 1.66   2009-03-26 Vito Marolda
                   Corrected interpretation of intel hex record 03 which is execution start address
-				  and not data segment address
+                  and not data segment address
 1.67   2009-04-19 SASANO Takayoshi
                   Add OpenBSD support
+1.68   2009-05-17 Martin Maurer
+                  Merge in changes done by Bruno Quoitin (baudrate problem when __APPLE__ is used)
+                  Remove TABs from source code and replaced them with spaces
 */
 
+// Please don't use TABs in the source code !!!
+
 // Don't forget to update the version string that is on the next line
-#define VERSION_STR "1.67"
+#define VERSION_STR "1.68"
 
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 static char RxTmpBuf[256];        // save received data to this buffer for half-duplex
@@ -373,17 +378,19 @@ static void OpenSerialPort(ISP_ENVIRONMENT *IspEnvironment)
     bzero(&IspEnvironment->newtio, sizeof(IspEnvironment->newtio));
     IspEnvironment->newtio.c_cflag = CS8 | CLOCAL | CREAD;
 
-#ifdef __APPLE__
-#define NEWTERMIOS_SETBAUDARTE(bps) IspEnvironment->newtio.c_ispeed = IspEnvironment->newtio.c_ospeed = bps;
+#if defined(__FreeBSD__) || defined(__OpenBSD__)
 
-#elif defined(__FreeBSD__) || defined(__OpenBSD__)
-
-	if(cfsetspeed(&IspEnvironment->newtio,(speed_t) strtol(IspEnvironment->baud_rate,NULL,10))) {
+    if(cfsetspeed(&IspEnvironment->newtio,(speed_t) strtol(IspEnvironment->baud_rate,NULL,10))) {
                   DebugPrintf(1, "baudrate %s not supported\n", IspEnvironment->baud_rate);
                   exit(3);
               };
 #else
+
+#ifdef __APPLE__
+#define NEWTERMIOS_SETBAUDARTE(bps) IspEnvironment->newtio.c_ispeed = IspEnvironment->newtio.c_ospeed = bps;
+#else
 #define NEWTERMIOS_SETBAUDARTE(bps) IspEnvironment->newtio.c_cflag |= bps;
+#endif
 
     switch (atol(IspEnvironment->baud_rate))
     {
@@ -1644,7 +1651,7 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
             }
             else if (RecordType == 0x03)     // 03 - Start segment address record
             {
-				unsigned long cs,ip;
+                unsigned long cs,ip;
                 StartAddress = 0;
                 for (i = 0; i < RecordLength * 2; i++)   // double amount of nibbles
                 {
@@ -1658,9 +1665,9 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
                         StartAddress |= Ascii2Hex(FileContent[Pos++]);
                     }
                 }
-				cs = StartAddress >> 16; //high part
-				ip = StartAddress & 0xffff; //low part
-				StartAddress = cs*16+ip; //segmented 20-bit space
+                cs = StartAddress >> 16; //high part
+                ip = StartAddress & 0xffff; //low part
+                StartAddress = cs*16+ip; //segmented 20-bit space
                 DebugPrintf(1,"Start Address = 0x%8X\n", StartAddress);
                 IspEnvironment->StartAddress = StartAddress;
             }

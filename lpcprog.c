@@ -708,8 +708,8 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
         }
         DebugPrintf(2, "OK \n");
     }
-	else{
-		//no wiping requested: erasing sector 0 first
+    else{
+        //no wiping requested: erasing sector 0 first
         DebugPrintf(2, "Erasing sector 0 first, to invalidate checksum. ");
         if (IspEnvironment->HalfDuplex == 0)
           sprintf(tmpString, "P %ld %ld\r\n", 0, 0);
@@ -733,7 +733,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             return (WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
         }
         DebugPrintf(2, "OK \n");
-	}
+    }
     while (1)
     {
         if (Sector >= LPCtypes[IspEnvironment->DetectedDevice].FlashSectors)
@@ -1154,12 +1154,12 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
                 // This was not working with my LPC2214 most of the time - Herbert Demmel
                 // was: cmdstr = "G 0 A\r\n0\r";
                 //cmdstr = "G 0 A\r\n0";
-	            sprintf(ExpectedAnswer, "G %ld A\r\n0", IspEnvironment->StartAddress);
+                sprintf(ExpectedAnswer, "G %ld A\r\n0", IspEnvironment->StartAddress);
             }
             else
             {
                 //cmdstr = "G 0 A\n0\r";
-	            sprintf(ExpectedAnswer, "G %ld A\n0", IspEnvironment->StartAddress);
+                sprintf(ExpectedAnswer, "G %ld A\n0", IspEnvironment->StartAddress);
             }
 
             //if (realsize == 0 || strncmp((const char *)Answer, "G 0 A\n0\r", 8) != 0)//if (realsize == 0 || strncmp((const char *)Answer, "G 0 A\r\n0\r", 9) != 0)
