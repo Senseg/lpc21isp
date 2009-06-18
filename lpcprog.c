@@ -79,11 +79,30 @@ static const unsigned int SectorTable_213x[] =
      4096,  4096,  4096,  4096
 };
 
+// Used for LPC17xx devices
+static const unsigned int SectorTable_17xx[] =
+{
+     4096,  4096,  4096,  4096,  4096,  4096,  4096,  4096,
+     4096,  4096,  4096,  4096,  4096,  4096,  4096,  4096,
+    32768, 32768, 32768, 32768, 32768, 32768, 32768, 32768,
+    32768, 32768, 32768, 32768, 32768, 32768
+};
+
 static int unsigned SectorTable_RAM[]  = { 65000 };
 
 static LPC_DEVICE_TYPE LPCtypes[] =
 {
     { 0, 0, 0 },  /* unknown */
+
+    { 0x00001110, 1751,  32,  8,  7, 4096, SectorTable_17xx },
+    { 0x00001121, 1752,  64, 16, 15, 4096, SectorTable_17xx },
+    { 0x00011722, 1754, 128, 32, 17, 4096, SectorTable_17xx },
+    { 0x00011723, 1756, 256, 32, 21, 4096, SectorTable_17xx },
+    { 0x00013F34, 1758, 512, 64, 29, 4096, SectorTable_17xx },
+    { 0x00011922, 1764, 128, 32, 17, 4096, SectorTable_17xx },
+    { 0x00013733, 1765, 256, 64, 21, 4096, SectorTable_17xx },
+    { 0x00013F33, 1766, 256, 64, 21, 4096, SectorTable_17xx },
+    { 0x00013F37, 1768, 512, 64, 29, 4096, SectorTable_17xx },
     { 0x0004FF11, 2103,  32,  8,  8, 4096, SectorTable_2103 },
     { 0xFFF0FF12, 2104, 128, 16, 15, 8192, SectorTable_210x },
     { 0xFFF0FF22, 2105, 128, 32, 15, 8192, SectorTable_210x },

@@ -270,12 +270,14 @@ Change-History:
 1.68   2009-05-17 Martin Maurer
                   Merge in changes done by Bruno Quoitin (baudrate problem when __APPLE__ is used)
                   Remove TABs from source code and replaced them with spaces
+1.69   2009-06-18 Martin Maurer
+                  Add support for LPC17xx devices
 */
 
 // Please don't use TABs in the source code !!!
 
 // Don't forget to update the version string that is on the next line
-#define VERSION_STR "1.68"
+#define VERSION_STR "1.69"
 
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 static char RxTmpBuf[256];        // save received data to this buffer for half-duplex
