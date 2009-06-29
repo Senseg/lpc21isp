@@ -1,6 +1,6 @@
 /******************************************************************************
 
-Project:           Portable command line ISP for Philips LPC2000 family
+Project:           Portable command line ISP for Philips LPC17XX / LPC2000 family
                    and Analog Devices ADUC70xx
 
 Filename:          lpc21isp.c
@@ -272,12 +272,21 @@ Change-History:
                   Remove TABs from source code and replaced them with spaces
 1.69   2009-06-18 Martin Maurer
                   Add support for LPC17xx devices
+1.70   2009-06-29 Martin Maurer
+                  Further improvement of LPC17xx support
+                  Workaround for booter (4.1) of LPC17xx, which does not echo all sent characters (0D,0A,...)
+                  ISP command GO seems to be broken:
+                  Sending 'G 196 T(0A)'
+                  Answer(Length=15): 'G 196 T(0A)0(0D)(0A)'
+                  leads to 'prefetch_abort_exception(0D)(0A)1FFF07A5'
+                  No solution known...need your help here...
+                  Manual workaround: Use DTR and RTS toggling to start application (e.g. 2 batch files)
 */
 
 // Please don't use TABs in the source code !!!
 
 // Don't forget to update the version string that is on the next line
-#define VERSION_STR "1.69"
+#define VERSION_STR "1.70"
 
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 static char RxTmpBuf[256];        // save received data to this buffer for half-duplex
@@ -490,7 +499,9 @@ void SendComPortBlock(ISP_ENVIRONMENT *IspEnvironment, const void *s, size_t n)
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 
     if (IspEnvironment->HalfDuplex == 0)
+    {
         WriteFile(IspEnvironment->hCom, s, n, &realsize, NULL);
+    }
     else
     {
         pch = (char *)s;
@@ -936,6 +947,7 @@ void ReceiveComPort(ISP_ENVIRONMENT *IspEnvironment,
 {
     unsigned long tmp_realsize;
     unsigned long nr_of_0x0A = 0;
+    unsigned long nr_of_0x0D = 0;
     int eof = 0;
     unsigned long p;
     unsigned char *Answer;
@@ -959,6 +971,10 @@ void ReceiveComPort(ISP_ENVIRONMENT *IspEnvironment,
                 {
                     nr_of_0x0A++;
                 }
+                else if (Answer[p] == 0x0d)
+                {
+                    nr_of_0x0D++;
+                }
                 else if (((signed char) Answer[p]) < 0)
                 {
                     eof = 1;
@@ -968,7 +984,7 @@ void ReceiveComPort(ISP_ENVIRONMENT *IspEnvironment,
 
         (*RealSize) += tmp_realsize;
 
-    } while (((*RealSize) < MaxSize) && (SerialTimeoutCheck(IspEnvironment) == 0) && (nr_of_0x0A < WantedNr0x0A) && !eof);
+    } while (((*RealSize) < MaxSize) && (SerialTimeoutCheck(IspEnvironment) == 0) && (nr_of_0x0A < WantedNr0x0A) && (nr_of_0x0D < WantedNr0x0A) && !eof);
 
     Answer[(*RealSize)] = 0;
 
@@ -1169,7 +1185,7 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
         DebugPrintf(2, "\n"
                        "Portable command line ISP for NXP LPC2000 family and Analog Devices ADUC 70xx\n"
                        "Version " VERSION_STR " compiled for " COMPILED_FOR ": " __DATE__ ", " __TIME__ "\n"
-                       "Copyright (c) by Martin Maurer, 2003-2008, Email: Martin.Maurer@clibb.de\n"
+                       "Copyright (c) by Martin Maurer, 2003-2009, Email: Martin.Maurer@clibb.de\n"
                        "Portions Copyright (c) by Aeolus Development 2004, www.aeolusdevelopment.com\n"
                        "\n");
 
@@ -1199,7 +1215,7 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                        "         -ADARM       for downloading to an Analog Devices\n"
                        "                      ARM microcontroller ADUC70xx\n"
                        "         -PHILIPSARM  for downloading to a microcontroller from\n"
-                       "                      Philips LPC2000 family (default)\n");
+                       "                      NXP(Philips) LPC17xx / LPC2000 family (default)\n");
 
         exit(1);
     }
@@ -1468,7 +1484,7 @@ void ReadHexFile(ISP_ENVIRONMENT *IspEnvironment)
                         StartAddress |= Ascii2Hex(FileContent[Pos++]);
                     }
                 }
-                DebugPrintf(1,"Start Address = 0x%8X\n", StartAddress);
+                DebugPrintf(1,"Start Address = 0x%08X\n", StartAddress);
                 IspEnvironment->StartAddress = StartAddress;
             }
 
@@ -1670,7 +1686,7 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
                 cs = StartAddress >> 16; //high part
                 ip = StartAddress & 0xffff; //low part
                 StartAddress = cs*16+ip; //segmented 20-bit space
-                DebugPrintf(1,"Start Address = 0x%8X\n", StartAddress);
+                DebugPrintf(1,"Start Address = 0x%08X\n", StartAddress);
                 IspEnvironment->StartAddress = StartAddress;
             }
             else if (RecordType == 0x04)     // 04 - Extended linear address record, used by IAR
@@ -1721,7 +1737,7 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
                         StartAddress |= Ascii2Hex(FileContent[Pos++]);
                     }
                 }
-                DebugPrintf(1,"Start Address = 0x%8X\n", StartAddress);
+                DebugPrintf(1,"Start Address = 0x%08X\n", StartAddress);
                 IspEnvironment->StartAddress = StartAddress;
             }
 

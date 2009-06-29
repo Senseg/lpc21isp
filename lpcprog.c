@@ -94,57 +94,59 @@ static LPC_DEVICE_TYPE LPCtypes[] =
 {
     { 0, 0, 0 },  /* unknown */
 
-    { 0x00001110, 1751,  32,  8,  7, 4096, SectorTable_17xx },
-    { 0x00001121, 1752,  64, 16, 15, 4096, SectorTable_17xx },
-    { 0x00011722, 1754, 128, 32, 17, 4096, SectorTable_17xx },
-    { 0x00011723, 1756, 256, 32, 21, 4096, SectorTable_17xx },
-    { 0x00013F34, 1758, 512, 64, 29, 4096, SectorTable_17xx },
-    { 0x00011922, 1764, 128, 32, 17, 4096, SectorTable_17xx },
-    { 0x00013733, 1765, 256, 64, 21, 4096, SectorTable_17xx },
-    { 0x00013F33, 1766, 256, 64, 21, 4096, SectorTable_17xx },
-    { 0x00013F37, 1768, 512, 64, 29, 4096, SectorTable_17xx },
-    { 0x0004FF11, 2103,  32,  8,  8, 4096, SectorTable_2103 },
-    { 0xFFF0FF12, 2104, 128, 16, 15, 8192, SectorTable_210x },
-    { 0xFFF0FF22, 2105, 128, 32, 15, 8192, SectorTable_210x },
-    { 0xFFF0FF32, 2106, 128, 64, 15, 8192, SectorTable_210x },
-    { 0x0201FF01, 2109,  64,  8,  8, 4096, SectorTable_2109 },
-    { 0x0101FF12, 2114, 128, 16, 15, 8192, SectorTable_211x },
-    { 0x0201FF12, 2119, 128, 16, 15, 8192, SectorTable_211x },
-    { 0x0101FF13, 2124, 256, 16, 17, 8192, SectorTable_212x },
-    { 0x0201FF13, 2129, 256, 16, 17, 8192, SectorTable_212x },
-    { 0x0002FF01, 2131,  32,  8,  8, 4096, SectorTable_213x },
-    { 0x0002FF11, 2132,  64, 16,  9, 4096, SectorTable_213x },
-    { 0x0002FF12, 2134, 128, 16, 11, 4096, SectorTable_213x },
-    { 0x0002FF23, 2136, 256, 32, 15, 4096, SectorTable_213x },
-    { 0x0002FF25, 2138, 512, 32, 27, 4096, SectorTable_213x },
-    { 0x0402FF01, 2141,  32,  8,  8, 4096, SectorTable_213x },
-    { 0x0402FF11, 2142,  64, 16,  9, 4096, SectorTable_213x },
-    { 0x0402FF12, 2144, 128, 16, 11, 4096, SectorTable_213x },
-    { 0x0402FF23, 2146, 256, 40, 15, 4096, SectorTable_213x },
-    { 0x0402FF25, 2148, 512, 40, 27, 4096, SectorTable_213x },
-    { 0x0301FF13, 2194, 256, 16, 17, 8192, SectorTable_212x },
-    { 0x0301FF12, 2210,   0, 16,  0, 8192, SectorTable_211x }, /* table is a "don't care" */
-    { 0x0401FF12, 2212, 128, 16, 15, 8192, SectorTable_211x },
-    { 0x0601FF13, 2214, 256, 16, 17, 8192, SectorTable_212x },
+    { 0x00001110, 1751,  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x00001121, 1752,  64, 16, 16, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x00011722, 1754, 128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x00011723, 1756, 256, 32, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x00013F34, 1758, 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x00011922, 1764, 128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x00013733, 1765, 256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x00013F33, 1766, 256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x26013F33, 1766, 256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x00013F37, 1768, 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+
+    { 0x0004FF11, 2103,  32,  8,  8, 4096, SectorTable_2103, CHIP_VARIANT_LPC2XXX },
+    { 0xFFF0FF12, 2104, 128, 16, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
+    { 0xFFF0FF22, 2105, 128, 32, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
+    { 0xFFF0FF32, 2106, 128, 64, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
+    { 0x0201FF01, 2109,  64,  8,  8, 4096, SectorTable_2109, CHIP_VARIANT_LPC2XXX },
+    { 0x0101FF12, 2114, 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
+    { 0x0201FF12, 2119, 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
+    { 0x0101FF13, 2124, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    { 0x0201FF13, 2129, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    { 0x0002FF01, 2131,  32,  8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0002FF11, 2132,  64, 16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0002FF12, 2134, 128, 16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0002FF23, 2136, 256, 32, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0002FF25, 2138, 512, 32, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0402FF01, 2141,  32,  8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0402FF11, 2142,  64, 16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0402FF12, 2144, 128, 16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0402FF23, 2146, 256, 40, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0402FF25, 2148, 512, 40, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0301FF13, 2194, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    { 0x0301FF12, 2210,   0, 16,  0, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX }, /* table is a "don't care" */
+    { 0x0401FF12, 2212, 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
+    { 0x0601FF13, 2214, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
     /*            2290; same id as the LPC2210 */
-    { 0x0401FF13, 2292, 256, 16, 17, 8192, SectorTable_212x },
-    { 0x0501FF13, 2294, 256, 16, 17, 8192, SectorTable_212x },
-    { 0x00000000, 2361, 128, 34, 11, 4096, SectorTable_213x },
-    { 0x00000000, 2362, 128, 34, 11, 4096, SectorTable_213x },
-    { 0x1600F902, 2364, 128, 34, 11, 4096, SectorTable_213x },
-    { 0x1600E823, 2365, 256, 58, 15, 4096, SectorTable_213x },
-    { 0x1600F923, 2366, 256, 58, 15, 4096, SectorTable_213x },
-    { 0x1600E825, 2367, 512, 58, 15, 4096, SectorTable_213x },
-    { 0x1600F925, 2368, 512, 58, 28, 4096, SectorTable_213x },
-    { 0x1700E825, 2377, 512, 58, 28, 4096, SectorTable_213x },
-    { 0x1700FD25, 2378, 512, 58, 28, 4096, SectorTable_213x },
-    { 0x1800F935, 2387, 512, 98, 28, 4096, SectorTable_213x },
-    { 0x1800FF35, 2388, 512, 98, 28, 4096, SectorTable_213x },
-    { 0x1500FF35, 2458, 512, 98, 28, 4096, SectorTable_213x },
-    { 0x1600FF30, 2460,   0, 98,  0, 4096, SectorTable_213x },
-    { 0x1600FF35, 2468, 512, 98, 28, 4096, SectorTable_213x },
-    { 0x1701FF30, 2470,   0, 98,  0, 4096, SectorTable_213x },
-    { 0x1701FF35, 2478, 512, 98, 28, 4096, SectorTable_213x }
+    { 0x0401FF13, 2292, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    { 0x0501FF13, 2294, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    { 0x00000000, 2361, 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x00000000, 2362, 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600F902, 2364, 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600E823, 2365, 256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600F923, 2366, 256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600E825, 2367, 512, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600F925, 2368, 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1700E825, 2377, 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1700FD25, 2378, 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1800F935, 2387, 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1800FF35, 2388, 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1500FF35, 2458, 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600FF30, 2460,   0, 98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600FF35, 2468, 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1701FF30, 2470,   0, 98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1701FF35, 2478, 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }
 };
 
 /***************************** PHILIPS Download *********************************/
@@ -398,33 +400,66 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             uuencode_table[i] = (char)(0x20 + i);
         }
 
-        // Patch 0x14, otherwise it is not running and jumps to boot mode
-
-        ivt_CRC = 0;
-
-        // Clear the vector at 0x14 so it doesn't affect the checksum:
-        for (i = 0; i < 4; i++)
+        if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
         {
-            IspEnvironment->BinaryContent[i + 0x14] = 0;
-        }
+            // Patch 0x14, otherwise it is not running and jumps to boot mode
 
-        // Calculate a native checksum of the little endian vector table:
-        for (i = 0; i < (4 * 8);) {
-            ivt_CRC += IspEnvironment->BinaryContent[i++];
-            ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
-            ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
-            ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
-        }
+            ivt_CRC = 0;
 
-        /* Negate the result and place in the vector at 0x14 as little endian
-        * again. The resulting vector table should checksum to 0. */
-        ivt_CRC = (unsigned long) (0 - ivt_CRC);
-        for (i = 0; i < 4; i++)
+            // Clear the vector at 0x14 so it doesn't affect the checksum:
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x14] = 0;
+            }
+
+            // Calculate a native checksum of the little endian vector table:
+            for (i = 0; i < (4 * 8);) {
+                ivt_CRC += IspEnvironment->BinaryContent[i++];
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
+            }
+
+            /* Negate the result and place in the vector at 0x14 as little endian
+            * again. The resulting vector table should checksum to 0. */
+            ivt_CRC = (unsigned long) (0 - ivt_CRC);
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x14] = (unsigned char)(ivt_CRC >> (8 * i));
+            }
+
+            DebugPrintf(3, "Position 0x14 patched: ivt_CRC = 0x%08lX\n", ivt_CRC);
+        }
+        else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX)
         {
-            IspEnvironment->BinaryContent[i + 0x14] = (unsigned char)(ivt_CRC >> (8 * i));
-        }
+            // Patch 0x1C, otherwise it is not running and jumps to boot mode
 
-        DebugPrintf(3, "Position 0x14 patched: ivt_CRC = 0x%08lX\n", ivt_CRC);
+            ivt_CRC = 0;
+
+            // Clear the vector at 0x1C so it doesn't affect the checksum:
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x1C] = 0;
+            }
+
+            // Calculate a native checksum of the little endian vector table:
+            for (i = 0; i < (4 * 8);) {
+                ivt_CRC += IspEnvironment->BinaryContent[i++];
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
+            }
+
+            /* Negate the result and place in the vector at 0x1C as little endian
+            * again. The resulting vector table should checksum to 0. */
+            ivt_CRC = (unsigned long) (0 - ivt_CRC);
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x1C] = (unsigned char)(ivt_CRC >> (8 * i));
+            }
+
+            DebugPrintf(3, "Position 0x1C patched: ivt_CRC = 0x%08lX\n", ivt_CRC);
+        }
     }
 
     DebugPrintf(2, "Synchronizing (ESC to abort)");
@@ -533,14 +568,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
     DebugPrintf(2, " OK\n");
 
-    if (IspEnvironment->HalfDuplex == 0)
-    {
-        SendComPort(IspEnvironment, "Synchronized\r\n");
-    }
-    else
-    {
-        SendComPort(IspEnvironment, "Synchronized\n");
-    }
+    SendComPort(IspEnvironment, "Synchronized\n");
 
     ReceiveComPort(IspEnvironment, Answer, sizeof(Answer) - 1, &realsize, 2, 1000);
 
@@ -555,19 +583,13 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
     DebugPrintf(3, "Setting oscillator\n");
 
-    if (IspEnvironment->HalfDuplex == 0)
-        sprintf(temp, "%s\r\n", IspEnvironment->StringOscillator);
-    else
-        sprintf(temp, "%s\n", IspEnvironment->StringOscillator);
+    sprintf(temp, "%s\n", IspEnvironment->StringOscillator);
 
     SendComPort(IspEnvironment, temp);
 
     ReceiveComPort(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 2, 1000);
 
-    if (IspEnvironment->HalfDuplex == 0)
-        sprintf(temp, "%s\r\nOK\r\n", IspEnvironment->StringOscillator);
-    else
-        sprintf(temp, "%s\nOK\r\n", IspEnvironment->StringOscillator);
+    sprintf(temp, "%s\nOK\r\n", IspEnvironment->StringOscillator);
 
     if (strcmp(Answer, temp) != 0)
     {
@@ -577,12 +599,8 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
     DebugPrintf(3, "Unlock\n");
 
-    if (IspEnvironment->HalfDuplex == 0)
-        cmdstr = "U 23130\r\n";
-    else
-        cmdstr = "U 23130\n";
+    cmdstr = "U 23130\n";
 
-    //if (!SendAndVerify(IspEnvironment, "U 23130\n", Answer, sizeof Answer))//if (!SendAndVerify(IspEnvironment, "U 23130\r\n", Answer, sizeof Answer))
     if (!SendAndVerify(IspEnvironment, cmdstr, Answer, sizeof Answer))
     {
         DebugPrintf(1, "Unlock-Command:\n");
@@ -591,24 +609,18 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
     DebugPrintf(2, "Read bootcode version: ");
 
-    if (IspEnvironment->HalfDuplex == 0)
-        cmdstr = "K\r\n";
-    else
-        cmdstr = "K\n";
+    cmdstr = "K\n";
 
     SendComPort(IspEnvironment, cmdstr);
 
     ReceiveComPort(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 4,5000);
 
-
-    //if (strncmp(Answer, "K\n", 2) != 0)//if (strncmp(Answer, "K\r\n", 3) != 0)
     if (strncmp(Answer, cmdstr, strlen(cmdstr)) != 0)
     {
         DebugPrintf(1, "no answer on Read Boot Code Version\n");
         return (NO_ANSWER_RBV);
     }
 
-    //if (strncmp(Answer, "K\n0\r\n", 5) == 0)//if (strncmp(Answer, "K\r\n0\r\n", 6) == 0)
     if (strncmp(Answer + strlen(cmdstr), "0\r\n", 3) == 0)
     {
         strippedAnswer = Answer + strlen(cmdstr) + 3;
@@ -630,28 +642,19 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
     DebugPrintf(2, "Read part ID: ");
 
-    if (IspEnvironment->HalfDuplex == 0)
-        cmdstr = "J\r\n";
-    else
-        cmdstr = "J\n";
+    cmdstr = "J\n";
 
     SendComPort(IspEnvironment, cmdstr);
 
     ReceiveComPort(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 3,5000);
 
-
-
-    //if (strncmp(Answer, "J\n", 2) != 0)//if (strncmp(Answer, "J\r\n", 3) != 0)
     if (strncmp(Answer, cmdstr, strlen(cmdstr)) != 0)
     {
         DebugPrintf(1, "no answer on Read Part Id\n");
         return (NO_ANSWER_RPID);
     }
 
-    if (IspEnvironment->HalfDuplex == 0)
-        strippedAnswer = (strncmp(Answer, "J\r\n0\r\n", 6) == 0) ? Answer + 6 : Answer;
-    else
-        strippedAnswer = (strncmp(Answer, "J\n0\r\n", 5) == 0) ? Answer + 5 : Answer;
+    strippedAnswer = (strncmp(Answer, "J\n0\r\n", 5) == 0) ? Answer + 5 : Answer;
 
     Pos = strtoul(strippedAnswer, &endPtr, 10);
     *endPtr = '\0'; /* delete \r\n */
@@ -674,10 +677,10 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
     * This makes sure that all code is downloaded as one big sector
     */
 
-    if (IspEnvironment->BinaryOffset >= LPC_RAMSTART)
+    if (IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment))
     {
         LPCtypes[IspEnvironment->DetectedDevice].FlashSectors = 1;
-        LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize  = LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024 - (LPC_RAMBASE - LPC_RAMSTART);
+        LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize  = LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024 - (ReturnValueLpcRamBase(IspEnvironment) - ReturnValueLpcRamStart(IspEnvironment));
         LPCtypes[IspEnvironment->DetectedDevice].SectorTable  = SectorTable_RAM;
         SectorTable_RAM[0] = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
     }
@@ -704,10 +707,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
     {
         DebugPrintf(2, "Wiping Device. ");
 
-        if (IspEnvironment->HalfDuplex == 0)
-          sprintf(tmpString, "P %ld %ld\r\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
-        else
-            sprintf(tmpString, "P %ld %ld\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
+        sprintf(tmpString, "P %ld %ld\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
 
         if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
         {
@@ -715,10 +715,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
         }
 
-        if (IspEnvironment->HalfDuplex == 0)
-            sprintf(tmpString, "E %ld %ld\r\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
-        else
-            sprintf(tmpString, "E %ld %ld\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
+        sprintf(tmpString, "E %ld %ld\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
 
         if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
         {
@@ -730,10 +727,8 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
     else{
         //no wiping requested: erasing sector 0 first
         DebugPrintf(2, "Erasing sector 0 first, to invalidate checksum. ");
-        if (IspEnvironment->HalfDuplex == 0)
-          sprintf(tmpString, "P %ld %ld\r\n", 0, 0);
-        else
-            sprintf(tmpString, "P %ld %ld\n", 0, 0);
+
+        sprintf(tmpString, "P %ld %ld\n", 0, 0);
 
         if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
         {
@@ -741,10 +736,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
         }
 
-        if (IspEnvironment->HalfDuplex == 0)
-            sprintf(tmpString, "E %ld %ld\r\n", 0, 0);
-        else
-            sprintf(tmpString, "E %ld %ld\n", 0, 0);
+        sprintf(tmpString, "E %ld %ld\n", 0, 0);
 
         if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
         {
@@ -764,12 +756,9 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
         DebugPrintf(2, "Sector %ld: ", Sector);
         fflush(stdout);
 
-        if (IspEnvironment->BinaryOffset < LPC_RAMSTART) // Skip Erase when running from RAM
+        if (IspEnvironment->BinaryOffset < ReturnValueLpcRamStart(IspEnvironment)) // Skip Erase when running from RAM
         {
-            if (IspEnvironment->HalfDuplex == 0)
-                sprintf(tmpString, "P %ld %ld\r\n", Sector, Sector);
-            else
-                sprintf(tmpString, "P %ld %ld\n", Sector, Sector);
+            sprintf(tmpString, "P %ld %ld\n", Sector, Sector);
 
             if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
             {
@@ -781,10 +770,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             fflush(stdout);
             if (IspEnvironment->WipeDevice == 0 && (Sector!=0)) //Sector 0 already erased
             {
-                if (IspEnvironment->HalfDuplex == 0)
-                    sprintf(tmpString, "E %ld %ld\r\n", Sector, Sector);
-                else
-                    sprintf(tmpString, "E %ld %ld\n", Sector, Sector);
+                sprintf(tmpString, "E %ld %ld\n", Sector, Sector);
 
                 if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
                 {
@@ -832,10 +818,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
                 CopyLength += ((45 * 4) - (CopyLength % (45 * 4)));
             }
 
-            if (IspEnvironment->HalfDuplex == 0)
-                sprintf(tmpString, "W %ld %ld\r\n", LPC_RAMBASE, CopyLength);
-            else
-                sprintf(tmpString, "W %ld %ld\n", LPC_RAMBASE, CopyLength);
+            sprintf(tmpString, "W %ld %ld\n", ReturnValueLpcRamBase(IspEnvironment), CopyLength);
 
             if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
             {
@@ -873,7 +856,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
                     for (BlockOffset = 0; BlockOffset < 45; BlockOffset++)
                     {
-                        if (IspEnvironment->BinaryOffset < LPC_RAMSTART)
+                        if (IspEnvironment->BinaryOffset < ReturnValueLpcRamStart(IspEnvironment))
                         { // Flash: use full memory
                             c = IspEnvironment->BinaryContent[Pos + Block * 45 + BlockOffset];
                         }
@@ -904,7 +887,6 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
 
 #if !defined COMPILE_FOR_LPC21
-                    sendbuf[Line][tmpStringPos++] = '\r';
                     sendbuf[Line][tmpStringPos++] = '\n';
                     sendbuf[Line][tmpStringPos++] = 0;
 
@@ -912,7 +894,6 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
                     // receive only for debug proposes
                     ReceiveComPort(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 1,5000);
 #else
-                    tmpString[tmpStringPos++] = '\r';
                     tmpString[tmpStringPos++] = '\n';
                     tmpString[tmpStringPos++] = 0;
 
@@ -937,19 +918,13 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
                             // printf("block_CRC = %ld\n", block_CRC);
 
-                            if (IspEnvironment->HalfDuplex == 0)
-                                sprintf(tmpString, "%ld\r\n", block_CRC);
-                            else
-                                sprintf(tmpString, "%ld\n", block_CRC);
+                            sprintf(tmpString, "%ld\n", block_CRC);
 
                             SendComPort(IspEnvironment, tmpString);
 
                             ReceiveComPort(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 2,5000);
 
-                            if (IspEnvironment->HalfDuplex == 0)
-                                sprintf(tmpString, "%ld\r\nOK\r\n", block_CRC);
-                            else
-                                sprintf(tmpString, "%ld\nOK\r\n", block_CRC);
+                            sprintf(tmpString, "%ld\nOK\r\n", block_CRC);
 
                             if (strcmp(Answer, tmpString) != 0)
                             {
@@ -978,7 +953,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
                         sprintf(tmpString, "%ld\r\nOK\r\n", block_CRC);
                         if (strcmp(Answer, tmpString) != 0)
                         {
-                            DebugPrintf(1, "Error on writing block_CRC (1)\n");
+                            DebugPrintf(1, "Error on writing block_CRC (2)\n");
                             return (ERROR_WRITE_CRC);
                         }
 #endif
@@ -993,19 +968,13 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 #if !defined COMPILE_FOR_LPC21
                 for (repeat = 0; repeat < 3; repeat++)
                 {
-                    if (IspEnvironment->HalfDuplex == 0)
-                        sprintf(tmpString, "%ld\r\n", block_CRC);
-                    else
-                        sprintf(tmpString, "%ld\n", block_CRC);
+                    sprintf(tmpString, "%ld\n", block_CRC);
 
                     SendComPort(IspEnvironment, tmpString);
 
                     ReceiveComPort(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 2,5000);
 
-                    if (IspEnvironment->HalfDuplex == 0)
-                        sprintf(tmpString, "%ld\r\nOK\r\n", block_CRC);
-                    else
-                        sprintf(tmpString, "%ld\nOK\r\n", block_CRC);
+                    sprintf(tmpString, "%ld\nOK\r\n", block_CRC);
 
                     if (strcmp(Answer, tmpString) != 0)
                     {
@@ -1021,7 +990,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
                 if (repeat >= 3)
                 {
-                    DebugPrintf(1, "Error on writing block_CRC (2)\n");
+                    DebugPrintf(1, "Error on writing block_CRC (3)\n");
                     return (ERROR_WRITE_CRC2);
                 }
 #else
@@ -1033,19 +1002,16 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
                 sprintf(tmpString, "%ld\r\nOK\r\n", block_CRC);
                 if (strcmp(Answer, tmpString) != 0)
                 {
-                    DebugPrintf(1, "Error on writing block_CRC (2)\n");
+                    DebugPrintf(1, "Error on writing block_CRC (4)\n");
                     return (ERROR_WRITE_CRC2);
                 }
 #endif
             }
 
-            if (IspEnvironment->BinaryOffset < LPC_RAMSTART)
+            if (IspEnvironment->BinaryOffset < ReturnValueLpcRamStart(IspEnvironment))
             {
                 // Prepare command must be repeated before every write
-                if (IspEnvironment->HalfDuplex == 0)
-                    sprintf(tmpString, "P %ld %ld\r\n", Sector, Sector);
-                else
-                    sprintf(tmpString, "P %ld %ld\n", Sector, Sector);
+                sprintf(tmpString, "P %ld %ld\n", Sector, Sector);
 
                 if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
                 {
@@ -1077,10 +1043,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
                     CopyLength = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
                 }
 
-                if (IspEnvironment->HalfDuplex == 0)
-                    sprintf(tmpString, "C %ld %ld %ld\r\n", SectorStart + SectorOffset, LPC_RAMBASE, CopyLength);
-                else
-                    sprintf(tmpString, "C %ld %ld %ld\n", SectorStart + SectorOffset, LPC_RAMBASE, CopyLength);
+                sprintf(tmpString, "C %ld %ld %ld\n", SectorStart + SectorOffset, ReturnValueLpcRamBase(IspEnvironment), CopyLength);
 
                 if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
                 {
@@ -1096,17 +1059,11 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
                     //and the compare result may not be correct.
                     if (SectorStart + SectorOffset<64)
                     {
-                        if (IspEnvironment->HalfDuplex == 0)
-                            sprintf(tmpString, "M %ld %ld %ld\r\n", 64, LPC_RAMBASE + (64 - SectorStart - SectorOffset), CopyLength-(64 - SectorStart - SectorOffset));
-                        else
-                            sprintf(tmpString, "M %ld %ld %ld\n", 64, LPC_RAMBASE + (64 - SectorStart - SectorOffset), CopyLength-(64 - SectorStart - SectorOffset));
+                        sprintf(tmpString, "M %ld %ld %ld\n", 64, ReturnValueLpcRamBase(IspEnvironment) + (64 - SectorStart - SectorOffset), CopyLength-(64 - SectorStart - SectorOffset));
                     }
                     else
                     {
-                        if (IspEnvironment->HalfDuplex == 0)
-                            sprintf(tmpString, "M %ld %ld %ld\r\n", SectorStart + SectorOffset, LPC_RAMBASE, CopyLength);
-                        else
-                            sprintf(tmpString, "M %ld %ld %ld\n", SectorStart + SectorOffset, LPC_RAMBASE, CopyLength);
+                        sprintf(tmpString, "M %ld %ld %ld\n", SectorStart + SectorOffset, ReturnValueLpcRamBase(IspEnvironment), CopyLength);
                     }
 
                     if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
@@ -1150,13 +1107,22 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
         DebugPrintf(2, "Now launching the brand new code\n");
         fflush(stdout);
 
-        if (IspEnvironment->HalfDuplex == 0)
-            sprintf(tmpString, "G %ld A\r\n", IspEnvironment->StartAddress);
-        else
+        if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
+        {
             sprintf(tmpString, "G %ld A\n", IspEnvironment->StartAddress);
+        }
+        else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX)
+        {
+            sprintf(tmpString, "G %ld T\n", IspEnvironment->StartAddress & ~1);
+        }
+        else
+        {
+            printf("Internal Error %s %s\n", __FILE__, __LINE__);
+            exit(1);
+        }
 
         SendComPort(IspEnvironment, tmpString); //goto 0 : run this fresh new downloaded code code
-        if (IspEnvironment->BinaryOffset < LPC_RAMSTART)
+        if (IspEnvironment->BinaryOffset < ReturnValueLpcRamStart(IspEnvironment))
         { // Skip response on G command - show response on Terminal instead
             ReceiveComPort(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 2, 5000);
             /* the reply string is frequently terminated with a -1 (EOF) because the
@@ -1168,20 +1134,20 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             /* Better to check only the first 9 chars instead of complete receive buffer,
             * because the answer can contain the output by the started programm
             */
-            if (IspEnvironment->HalfDuplex == 0)
+            if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
             {
-                // This was not working with my LPC2214 most of the time - Herbert Demmel
-                // was: cmdstr = "G 0 A\r\n0\r";
-                //cmdstr = "G 0 A\r\n0";
-                sprintf(ExpectedAnswer, "G %ld A\r\n0", IspEnvironment->StartAddress);
+                sprintf(ExpectedAnswer, "G %ld A\n0", IspEnvironment->StartAddress);
+            }
+            else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX)
+            {
+                sprintf(ExpectedAnswer, "G %ld T\n0", IspEnvironment->StartAddress & ~1);
             }
             else
             {
-                //cmdstr = "G 0 A\n0\r";
-                sprintf(ExpectedAnswer, "G %ld A\n0", IspEnvironment->StartAddress);
+                printf("Internal Error %s %s\n", __FILE__, __LINE__);
+                exit(1);
             }
 
-            //if (realsize == 0 || strncmp((const char *)Answer, "G 0 A\n0\r", 8) != 0)//if (realsize == 0 || strncmp((const char *)Answer, "G 0 A\r\n0\r", 9) != 0)
             if (realsize == 0 || strncmp((const char *)Answer, /*cmdstr*/ExpectedAnswer, strlen(/*cmdstr*/ExpectedAnswer)) != 0)
             {
                 DebugPrintf(2, "Failed to run the new downloaded code: ");
@@ -1194,3 +1160,33 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
     return (0);
 }
 #endif // LPC_SUPPORT
+
+
+unsigned long ReturnValueLpcRamStart(ISP_ENVIRONMENT *IspEnvironment)
+{
+  if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
+  {
+    return LPC_RAMSTART_LPC2XXX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX)
+  {
+    return LPC_RAMSTART_LPC17XX;
+  }
+  printf("Error in ReturnValueLpcRamStart (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
+  exit(1);
+}
+
+
+unsigned long ReturnValueLpcRamBase(ISP_ENVIRONMENT *IspEnvironment)
+{
+  if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
+  {
+    return LPC_RAMBASE_LPC2XXX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX)
+  {
+    return LPC_RAMBASE_LPC17XX;
+  }
+  printf("Error in ReturnValueLpcRamBase (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
+  exit(1);
+}

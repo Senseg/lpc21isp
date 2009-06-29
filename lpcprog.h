@@ -42,8 +42,11 @@ Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.c
 *                Any interrupt vectors must be copied to 0x4000,0000 and remapped to 0x0000,0000
 *                by the startup code.
 */
-#define LPC_RAMSTART    0x40000000L
-#define LPC_RAMBASE     0x40000200L
+#define LPC_RAMSTART_LPC2XXX    0x40000000L
+#define LPC_RAMBASE_LPC2XXX     0x40000200L
+
+#define LPC_RAMSTART_LPC17XX    0x10000000L
+#define LPC_RAMBASE_LPC17XX     0x10000200L
 
 /* Return values used by PhilipsDownload(): reserving all values from 0x1000 to 0x1FFF */
 
@@ -68,12 +71,14 @@ Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.c
 #define WRONG_ANSWER_COPY   0x1600   /* return value is 0x1600 + philips ISP returned value (0 to 255) */
 #define FAILED_RUN          0x1700   /* return value is 0x1700 + philips ISP returned value (0 to 255) */
 
+#if defined COMPILE_FOR_LPC21
 #ifndef WIN32
-#define LPC_BSL_PIN        13
-#define LPC_RESET_PIN    47
-#define LPC_RESET(in)    NAsetGPIOpin(LPC_RESET_PIN, (in))
-#define LPC_BSL(in)        NAsetGPIOpin(LPC_BSL_PIN, (in))
-#endif
+#define LPC_BSL_PIN         13
+#define LPC_RESET_PIN       47
+#define LPC_RESET(in)       NAsetGPIOpin(LPC_RESET_PIN, (in))
+#define LPC_BSL(in)         NAsetGPIOpin(LPC_BSL_PIN,   (in))
+#endif // WIN32
+#endif // COMPILE_FOR_LPC21
 
 
 /* LPC_FLASHMASK
@@ -86,6 +91,12 @@ Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.c
 */
 #define LPC_FLASHMASK  0xFFC00000 /* 22 bits = 4 MB */
 
+typedef enum
+  {
+  CHIP_VARIANT_LPC2XXX,
+  CHIP_VARIANT_LPC17XX,
+  } CHIP_VARIANT;
+
 typedef struct
 {
     unsigned long id;
@@ -95,6 +106,12 @@ typedef struct
     unsigned FlashSectors;  /* total number of sectors */
     unsigned MaxCopySize;   /* maximum size that can be copied to Flash in a single command */
     const unsigned int *SectorTable; /* pointer to a sector table with constant the sector sizes */
+    CHIP_VARIANT ChipVariant;
 } LPC_DEVICE_TYPE;
 
 int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment);
+
+unsigned long ReturnValueLpcRamStart(ISP_ENVIRONMENT *IspEnvironment);
+
+unsigned long ReturnValueLpcRamBase(ISP_ENVIRONMENT *IspEnvironment);
+
