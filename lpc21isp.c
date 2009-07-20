@@ -281,12 +281,14 @@ Change-History:
                   leads to 'prefetch_abort_exception(0D)(0A)1FFF07A5'
                   No solution known...need your help here...
                   Manual workaround: Use DTR and RTS toggling to start application (e.g. 2 batch files)
+1.71   2009-07-19 Martin Maurer
+                  Added LPC17xx with CPUID starting with 0x26 (not according user manual)
 */
 
 // Please don't use TABs in the source code !!!
 
 // Don't forget to update the version string that is on the next line
-#define VERSION_STR "1.70"
+#define VERSION_STR "1.71"
 
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 static char RxTmpBuf[256];        // save received data to this buffer for half-duplex
