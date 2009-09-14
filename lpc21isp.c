@@ -285,12 +285,15 @@ Change-History:
                   Added LPC17xx with CPUID starting with 0x26 (not according user manual)
 1.72   2009-09-14 Martin Maurer
                   Add support for LPC13xx devices
+1.73   2009-09-14 Martin Maurer
+                  Correct again (hopefully the last time) the CPUIDs for some LPC17xx devices
+                  (Now according to User Manual LPC17xx Version 00.07 (31 July 2009))
 */
 
 // Please don't use TABs in the source code !!!
 
 // Don't forget to update the version string that is on the next line
-#define VERSION_STR "1.72"
+#define VERSION_STR "1.73"
 
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 static char RxTmpBuf[256];        // save received data to this buffer for half-duplex
