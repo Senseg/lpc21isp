@@ -94,6 +94,11 @@ static LPC_DEVICE_TYPE LPCtypes[] =
 {
     { 0, 0, 0 },  /* unknown */
 
+    { 0x2C42502B, 1311,   8,  4,  2, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x2C40102B, 1313,  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x2D01402B, 1342,   8,  4,  2, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x2D00002B, 1343,  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+
     { 0x26001110, 1751,  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
     { 0x26001121, 1752,  64, 16, 16, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
     { 0x26011722, 1754, 128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },

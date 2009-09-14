@@ -5,11 +5,11 @@ Project:           Portable command line ISP for Philips LPC17XX / LPC2000 famil
 
 Filename:          lpc21isp.c
 
-Compiler:          Microsoft VC 6/7, GCC Cygwin, GCC Linux, GCC ARM ELF
+Compiler:          Microsoft VC 6/7, Microsoft VS2008, GCC Cygwin, GCC Linux, GCC ARM ELF
 
 Author:            Martin Maurer (Martin.Maurer@clibb.de)
 
-Copyright:         (c) Martin Maurer 2003-2008, All rights reserved
+Copyright:         (c) Martin Maurer 2003-2009, All rights reserved
 Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.com
 
     This file is part of lpc21isp.
@@ -283,12 +283,14 @@ Change-History:
                   Manual workaround: Use DTR and RTS toggling to start application (e.g. 2 batch files)
 1.71   2009-07-19 Martin Maurer
                   Added LPC17xx with CPUID starting with 0x26 (not according user manual)
+1.72   2009-09-14 Martin Maurer
+                  Add support for LPC13xx devices
 */
 
 // Please don't use TABs in the source code !!!
 
 // Don't forget to update the version string that is on the next line
-#define VERSION_STR "1.71"
+#define VERSION_STR "1.72"
 
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 static char RxTmpBuf[256];        // save received data to this buffer for half-duplex
@@ -1217,7 +1219,7 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                        "         -ADARM       for downloading to an Analog Devices\n"
                        "                      ARM microcontroller ADUC70xx\n"
                        "         -PHILIPSARM  for downloading to a microcontroller from\n"
-                       "                      NXP(Philips) LPC17xx / LPC2000 family (default)\n");
+                       "                      NXP(Philips) LPC13xx/LPC17xx/LPC2000 family (default)\n");
 
         exit(1);
     }
