@@ -9,7 +9,7 @@ Compiler:          Microsoft VC 6/7, Microsoft VS2008, GCC Cygwin, GCC Linux, GC
 
 Author:            Martin Maurer (Martin.Maurer@clibb.de)
 
-Copyright:         (c) Martin Maurer 2003-2009, All rights reserved
+Copyright:         (c) Martin Maurer 2003-2010, All rights reserved
 Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.com
 
     This file is part of lpc21isp.
@@ -288,12 +288,25 @@ Change-History:
 1.73   2009-09-14 Martin Maurer
                   Correct again (hopefully the last time) the CPUIDs for some LPC17xx devices
                   (Now according to User Manual LPC17xx Version 00.07 (31 July 2009))
+1.74   2009-09-14 Mario Ivancic
+                  Added support for multiple HEX files, besed on internal version 1.37B.
+                  NOTE: this feature is used in production in 1.37B but is not tested in this version.
+                  Added numeric debug level command line switch -debugn, n=[0-5]
+                  Added command line scitch -try n to specify nQuestionMarks limit. Defaul: 100
+                  Merged in DoNotStart patch from cgommel_new
+                  Static functions declarations moved from lpc21isp.h to this file
+                  Modified LoadFile() to return error_code instead exit(1)
+                  Removed IspEnvironment.debug_level, all code uses global debug_level
+1.75   2010-01-05 Martin Maurer
+                  Added support for LPC11xx devices (not tested at all)
+                  Changed Product in LPC_DEVICE_TYPE from number to string to distinguish new LPC11 devices
+                  Changed "unsigned" to "unsigned int" in LPC_DEVICE_TYPE
 */
 
 // Please don't use TABs in the source code !!!
 
 // Don't forget to update the version string that is on the next line
-#define VERSION_STR "1.73"
+#define VERSION_STR "1.75"
 
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 static char RxTmpBuf[256];        // save received data to this buffer for half-duplex
@@ -303,6 +316,30 @@ char * pRxTmpBuf = RxTmpBuf;
 #if !defined COMPILE_FOR_LPC21
 int debug_level = 2;
 #endif
+
+static void ControlModemLines(ISP_ENVIRONMENT *IspEnvironment, unsigned char DTR, unsigned char RTS);
+static unsigned char Ascii2Hex(unsigned char c);
+
+#ifdef COMPILE_FOR_WINDOWS
+static void SerialTimeoutSet(ISP_ENVIRONMENT *IspEnvironment, unsigned timeout_milliseconds);
+static int SerialTimeoutCheck(ISP_ENVIRONMENT *IspEnvironment);
+#endif // COMPILE_FOR_WINDOWS
+
+static int AddFileHex(ISP_ENVIRONMENT *IspEnvironment, const char *arg);
+static int AddFileBinary(ISP_ENVIRONMENT *IspEnvironment, const char *arg);
+static int LoadFile(ISP_ENVIRONMENT *IspEnvironment, const char *filename, int FileFormat);
+
+#define ERR_RECORD_TYPE_LOADFILE	55 /** File record type not yet implemented. */
+#define ERR_ALLOC_FILE_LIST 60
+#define ERR_FILE_OPEN_HEX	61	/**< Couldn't open hex file. */
+#define ERR_FILE_SIZE_HEX	62	/**< Unexpected hex file size. */
+#define ERR_FILE_ALLOC_HEX	63	/**< Couldn't allocate enough memory for hex file. */
+#define ERR_FILE_ALLOC_BIN	64	/**< Couldn't allocate enough memory for bin file. */
+#define ERR_FILE_RECST_HEX	65	/**< Can't find start of record indicator for Intel Hex file.*/
+#define ERR_FILE_OPEN_BIN	66	/**< Couldn't open binary file. */
+#define ERR_FILE_SIZE_BIN	67	/**< Unexpected binary file size. */
+#define ERR_FILE_WRITE_BIN	68	/**< Couldn't write debug binary file to disk. How's that for ironic? */
+#define ERR_MEMORY_RANGE    69  /**< Out of memory range. */
 
 /************* Portability layer. Serial and console I/O differences    */
 /* are taken care of here.                                              */
@@ -1054,7 +1091,7 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
 
     if (argc >= 5)
     {
-        for (i = 1; i < argc - 4; i++)
+        for (i = 1; i < argc - 3; i++)
         {
             if (stricmp(argv[i], "-wipe") == 0)
             {
@@ -1092,10 +1129,21 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                 continue;
             }
 
-            if (stricmp(argv[i], "-debug") == 0)
+            if(strnicmp(argv[i],"-debug", 6) == 0)
             {
-                debug_level = 4;
-                DebugPrintf(3, "Turn on debug.\n");
+                char* num;
+                num = argv[i] + 6;
+                while(*num && isdigit(*num) == 0) num++;
+                if(isdigit(*num) != 0) debug_level = atoi( num);
+                else debug_level = 4;
+                DebugPrintf(3, "Turn on debug, level: %d.\n", debug_level);
+                continue;
+            }
+
+            if (stricmp(argv[i], "-DoNotStart") == 0)
+            {
+                IspEnvironment->DoNotStart = 1;
+                DebugPrintf(3, "Do NOT start MCU after programming.\n");
                 continue;
             }
 
@@ -1164,10 +1212,24 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
             }
 #endif
 
-            DebugPrintf(2, "Unknown command line option: \"%s\"\n", argv[i]);
+            if(*argv[i] == '-') DebugPrintf( 2, "Unknown command line option: \"%s\"\n", argv[i]);
+            else
+            {
+                int ret_val;
+                if(IspEnvironment->FileFormat == FORMAT_HEX)
+                {
+                    ret_val = AddFileHex(IspEnvironment, argv[i]);
+                }
+                else
+                {
+                    ret_val = AddFileBinary(IspEnvironment, argv[i]);
+                }
+                if( ret_val != 0)
+                {
+                    DebugPrintf( 2, "Unknown command line option: \"%s\"\n", argv[i]);
+                }
+            }
         }
-
-        IspEnvironment->input_file = argv[argc - 4];
 
         // Newest cygwin delivers a '\x0d' at the end of argument
         // when calling lpc21isp from batch file
@@ -1196,7 +1258,7 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                        "Portions Copyright (c) by Aeolus Development 2004, www.aeolusdevelopment.com\n"
                        "\n");
 
-        DebugPrintf(1, "Syntax:  lpc21isp [Options] file comport baudrate Oscillator_in_kHz\n\n"
+        DebugPrintf(1, "Syntax:  lpc21isp [Options] file[ file[ ...]] comport baudrate Oscillator_in_kHz\n\n"
                        "Example: lpc21isp test.hex com1 115200 14746\n\n"
                        "Options: -bin         for uploading binary file\n"
                        "         -hex         for uploading file in intel hex format (default)\n"
@@ -1204,7 +1266,11 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                        "         -termonly    for starting terminal without an upload\n"
                        "         -localecho   for local echo in terminal\n"
                        "         -detectonly  detect only used LPC chiptype (PHILIPSARM only)\n"
-                       "         -debug       for creating a lot of debug infos\n"
+                       "         -debug0      for no debug\n"
+                       "         -debug3      for progress info only\n"
+                       "         -debug5      for full debug\n"
+                       "         -donotstart  do not start MCU after download\n"
+                       "         -try<n>      try n times to synchronise\n"
                        "         -wipe        Erase entire device before upload\n"
                        "         -control     for controlling RS232 lines for easier booting\n"
                        "                      (Reset = DTR, EnableBootLoader = RTS)\n"
@@ -1306,6 +1372,63 @@ static unsigned char Ascii2Hex(unsigned char c)
     return 0;  // this "return" will never be reached, but some compilers give a warning if it is not present
 }
 
+
+/***************************** AddFileHex *******************************/
+/**  Add a file to the list of files to read in, flag it as hex format.
+\param [in] IspEnvironment Programming environment.
+\param [in] arg The argument that was passed to the program as a file name.
+\return 0 on success, an error code otherwise.
+*/
+static int AddFileHex(ISP_ENVIRONMENT *IspEnvironment, const char *arg)
+{
+    FILE_LIST *entry;
+
+    // Add file to list.  If cannot allocate storage for node return an error.
+    entry = malloc(sizeof(FILE_LIST));
+    if( entry == 0)
+    {
+        DebugPrintf(1, "Error %d Could not allocated memory for file node %s\n", ERR_ALLOC_FILE_LIST, arg);
+        return  ERR_ALLOC_FILE_LIST;
+    }
+
+    // Build up entry and insert it at the start of the list.
+    entry->name = arg;
+    entry->prev = IspEnvironment->f_list;
+    entry->hex_flag = 1;
+    IspEnvironment->f_list = entry;
+
+    return 0;       // Success.
+}
+
+
+/***************************** AddFileBinary ****************************/
+/**  Add a file to the list of files to read in, flag it as binary format.
+\param [in] IspEnvironment Programming environment.
+\param [in] arg The argument that was passed to the program as a file name.
+\return 0 on success, an error code otherwise.
+*/
+static int AddFileBinary(ISP_ENVIRONMENT *IspEnvironment, const char *arg)
+{
+    FILE_LIST *entry;
+
+    // Add file to list. If cannot allocate storage for node return an error.
+    entry = malloc(sizeof(FILE_LIST));
+    if( entry == 0)
+    {
+        DebugPrintf( 1, "Error %d Could not allocated memory for file node %s\n", ERR_ALLOC_FILE_LIST, arg);
+        return  ERR_ALLOC_FILE_LIST;
+    }
+
+    // Build up entry and insert it at the start of the list.
+    entry->name = arg;
+    entry->prev = IspEnvironment->f_list;
+    entry->hex_flag = 0;
+    IspEnvironment->f_list = entry;
+
+    return 0;       // Success.
+}
+
+#if 0
 void ReadHexFile(ISP_ENVIRONMENT *IspEnvironment)
 {
     LoadFile(IspEnvironment);
@@ -1512,13 +1635,17 @@ void ReadHexFile(ISP_ENVIRONMENT *IspEnvironment)
         }
     }
 }
+#endif // #if 0
 
 
 /***************************** LoadFile *********************************/
 /**  Loads the requested file to download into memory.
 \param [in] IspEnvironment  structure containing input filename
+\param [in] filename	the name of the file to read in.
+\param [in] FileFormat	the format of the file to read in (FORMAT_HEX or FORMAT_BINARY)
+\return 0 if successful, otherwise an error code.
 */
-static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
+static int LoadFile(ISP_ENVIRONMENT *IspEnvironment, const char *filename, int FileFormat)
 {
     int            fd;
     int            i;
@@ -1529,11 +1656,11 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
                                              /*   file before converting to binary.  */
     unsigned long  BinaryMemSize;
 
-    fd = open(IspEnvironment->input_file, O_RDONLY | O_BINARY);
+    fd = open(filename, O_RDONLY | O_BINARY);
     if (fd == -1)
     {
-        DebugPrintf(1, "Can't open file %s\n", IspEnvironment->input_file);
-        exit(1);
+        DebugPrintf(1, "Can't open file %s\n", filename);
+        return ERR_FILE_OPEN_HEX;
     }
 
     FileLength = lseek(fd, 0L, 2);      // Get file size
@@ -1541,31 +1668,33 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
     if (FileLength == (size_t)-1)
     {
         DebugPrintf(1, "\nFileLength = -1 !?!\n");
-        exit(1);
+        return ERR_FILE_SIZE_HEX;
     }
 
     lseek(fd, 0L, 0);
 
+    // Just read the entire file into memory to parse.
     FileContent = (BINARY*) malloc(FileLength);
 
-    BinaryMemSize = FileLength * 2;
+    if( FileContent == 0)
+    {
+        DebugPrintf( 1, "\nCouldn't allocate enough memory for file.\n");
+        return ERR_FILE_ALLOC_HEX;
+    }
 
-    IspEnvironment->BinaryLength = 0;   /* Increase length as needed.       */
-    IspEnvironment->BinaryOffset = 0;
-    IspEnvironment->StartAddress = 0;
     BinaryOffsetDefined = 0;
 
-    IspEnvironment->BinaryContent = (BINARY*) malloc(BinaryMemSize);
+    BinaryMemSize = IspEnvironment->BinaryLength;
 
     read(fd, FileContent, FileLength);
 
     close(fd);
 
-    DebugPrintf(2, "File %s:\n\tloaded...\n", IspEnvironment->input_file);
+    DebugPrintf(2, "File %s:\n\tloaded...\n", filename);
 
     // Intel-Hex -> Binary Conversion
 
-    if (IspEnvironment->FileFormat == FORMAT_HEX)
+    if (FileFormat == FORMAT_HEX)
     {
         unsigned char  RecordLength;
         unsigned short RecordAddress;
@@ -1574,7 +1703,7 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
         unsigned char  Hexvalue;
         unsigned long  StartAddress;
 
-        DebugPrintf(3, "Converting file %s to binary format...\n", IspEnvironment->input_file);
+        DebugPrintf(3, "Converting file %s to binary format...\n", filename);
 
         Pos = 0;
         while (Pos < FileLength)
@@ -1634,8 +1763,9 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
                 // Memory for binary file big enough ?
                 while (RealAddress + RecordLength - IspEnvironment->BinaryOffset > BinaryMemSize)
                 {
-                    BinaryMemSize <<= 1;
-                    IspEnvironment->BinaryContent = (BINARY*) realloc(IspEnvironment->BinaryContent, BinaryMemSize);
+                    if(!BinaryMemSize) BinaryMemSize = FileLength * 2;
+                    else BinaryMemSize <<= 1;
+                    IspEnvironment->BinaryContent = realloc(IspEnvironment->BinaryContent, BinaryMemSize);
                 }
 
                 // We need to know, what the highest address is,
@@ -1725,7 +1855,7 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
                         DebugPrintf(1, "New Extended Linear Address Record [04] out of memory range\n");
                         DebugPrintf(1, "Current Memory starts at: 0x%08X, new Address is: 0x%08X",
                             IspEnvironment->BinaryOffset, RealAddress);
-                        exit(1);
+                        return ERR_MEMORY_RANGE;
                     }
                 }
             }
@@ -1747,6 +1877,12 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
                 DebugPrintf(1,"Start Address = 0x%08X\n", StartAddress);
                 IspEnvironment->StartAddress = StartAddress;
             }
+            else
+            {
+                free( FileContent);
+                DebugPrintf( 1, "Error %d RecordType %02X not yet implemented\n", ERR_RECORD_TYPE_LOADFILE, RecordType);
+                return( ERR_RECORD_TYPE_LOADFILE);
+            }
 
             while (FileContent[Pos++] != 0x0a)      // Search till line end
             {
@@ -1763,25 +1899,96 @@ static void LoadFile(ISP_ENVIRONMENT *IspEnvironment)
             write(fdout, IspEnvironment->BinaryContent, IspEnvironment->BinaryLength);
             close(fdout);
         }
-    }
-    else
-    {
-        memcpy(IspEnvironment->BinaryContent, FileContent, FileLength);
 
+        free( FileContent);		// Done with file contents
+    }
+    else // FORMAT_BINARY
+    {
+        IspEnvironment->BinaryContent = FileContent;
         IspEnvironment->BinaryLength = FileLength;
     }
 
     DebugPrintf(2, "\timage size : %ld\n", IspEnvironment->BinaryLength);
+
+    return 0;
+}
+
+/***************************** LoadFiles1 ********************************/
+/**  Loads the requested files to download into memory.
+\param [in] IspEnvironment structure containing input filename(s).
+\param [in] file simple linked list of files to read
+\return 0 if successful, otherwise an error code.
+*/
+static int LoadFiles1(ISP_ENVIRONMENT *IspEnvironment, const FILE_LIST *file)
+{
+    int ret_val;
+
+    if( file->prev != 0)
+    {
+        DebugPrintf( 3, "Follow file list %s\n", file->name);
+
+        ret_val = LoadFiles1( IspEnvironment, file->prev);
+		if( ret_val != 0)
+		{
+			return ret_val;
+		}
+    }
+
+    DebugPrintf( 3, "Attempt to read File %s\n", file->name);
+    if(file->hex_flag != 0)
+    {
+        ret_val = LoadFile(IspEnvironment, file->name, FORMAT_HEX);
+    }
+    else
+    {
+		ret_val = LoadFile(IspEnvironment, file->name, FORMAT_BINARY);
+    }
+    if( ret_val != 0)
+    {
+		return ret_val;
+    }
+
+    return 0;
+}
+
+/***************************** LoadFiles ********************************/
+/**  Loads the requested files to download into memory.
+\param [in] IspEnvironment structure containing input filename(s).
+\param [in] file simple linked list of files to read
+\return 0 if successful, otherwise an error code.
+*/
+static int LoadFiles(ISP_ENVIRONMENT *IspEnvironment)
+{
+	int ret_val;
+
+    ret_val = LoadFiles1(IspEnvironment, IspEnvironment->f_list);
+    if( ret_val != 0)
+    {
+		exit(1); // return ret_val;
+    }
+
+	DebugPrintf( 2, "Image size : %ld\n", IspEnvironment->BinaryLength);
 
     // check length to flash for correct alignment, can happen with broken ld-scripts
     if (IspEnvironment->BinaryLength % 4 != 0)
     {
         unsigned long NewBinaryLength = ((IspEnvironment->BinaryLength + 3)/4) * 4;
 
-        DebugPrintf(2, "Warning:  data not aligned to 32 bits, padded (length was %lX, now %lX)\n", IspEnvironment->BinaryLength, NewBinaryLength);
+        DebugPrintf( 2, "Warning:  data not aligned to 32 bits, padded (length was %lX, now %lX)\n", IspEnvironment->BinaryLength, NewBinaryLength);
 
         IspEnvironment->BinaryLength = NewBinaryLength;
     }
+
+	// When debugging is switched on, output result of conversion to file debugout.bin
+    if(debug_level >= 4)
+    {
+         int fdout;
+		 DebugPrintf( 1, "Dumping image file.\n");
+         fdout = open("debugout.bin", O_RDWR | O_BINARY | O_CREAT | O_TRUNC, 0777);
+         write(fdout, IspEnvironment->BinaryContent, IspEnvironment->BinaryLength);
+         close(fdout);
+    }
+    return 0;
 }
 #endif // !defined COMPILE_FOR_LPC21
 
@@ -1795,7 +2002,7 @@ int PerformActions(ISP_ENVIRONMENT *IspEnvironment)
     /* Download requested, read in the input file.                  */
     if (IspEnvironment->ProgramChip)
     {
-        LoadFile(IspEnvironment);
+        LoadFiles(IspEnvironment);
     }
 
     OpenSerialPort(IspEnvironment);   /* Open the serial port to the microcontroller. */
@@ -1837,7 +2044,7 @@ int PerformActions(ISP_ENVIRONMENT *IspEnvironment)
         ResetTarget(IspEnvironment, RUN_MODE);
     }
 
-    IspEnvironment->debug_level = 1;    /* From now on there is no more debug output !! */
+    debug_level = 1;    /* From now on there is no more debug output !! */
                                         /* Therefore switch it off...                   */
 
 #ifdef TERMINAL_SUPPORT
@@ -1876,6 +2083,8 @@ int main(int argc, char *argv[])
     IspEnvironment.micro       = PHILIPS_ARM;                 // Default Micro
     IspEnvironment.FileFormat  = FORMAT_HEX;                  // Default File Format
     IspEnvironment.ProgramChip = TRUE;                        // Default to Programming the chip
+    IspEnvironment.nQuestionMarks = 100;
+    IspEnvironment.DoNotStart = 0;
     ReadArguments(&IspEnvironment, argc, argv);               // Read and parse the command line
 
     return PerformActions(&IspEnvironment);                   // Do as requested !
@@ -1929,10 +2138,12 @@ int lpctest(char* FileName)
     IspEnvironment.micro        = PHILIPS_ARM;                 // Default Micro
     IspEnvironment.FileFormat   = FORMAT_HEX;                  // Default File Format
     IspEnvironment.ProgramChip  = TRUE;                        // Default to Programming the chip
-    IspEnvironment.input_file   = FileName;
+    // IspEnvironment.input_file   = FileName;
     IspEnvironment.ControlLines = TRUE;
     IspEnvironment.serial_port  = "COM2";
     IspEnvironment.baud_rate    = "19200";
+    IspEnvironment.nQuestionMarks = 100;
+    IspEnvironment.DoNotStart = 0;
     strcpy(IspEnvironment.StringOscillator, "25000");
 
     return PerformActions(&IspEnvironment);                    // Do as requested !

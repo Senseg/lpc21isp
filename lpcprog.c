@@ -94,63 +94,72 @@ static LPC_DEVICE_TYPE LPCtypes[] =
 {
     { 0, 0, 0 },  /* unknown */
 
-    { 0x2C42502B, 1311,   8,  4,  2, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x2C40102B, 1313,  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x2D01402B, 1342,   8,  4,  2, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x2D00002B, 1343,  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x041E502B, "1111.../101",   8,  2,  2, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x0416502B, "1111.../201",   8,  4,  2, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x042D502B, "1112.../101",  16,  2,  4, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x0425502B, "1112.../201",  16,  4,  4, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x0434502B, "1113.../201",  24,  4,  6, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x0434102B, "1113.../301",  24,  8,  6, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x0444502B, "1114.../201",  32,  4,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x0444102B, "1114.../301",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
 
-    { 0x25001110, 1751,  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x25001121, 1752,  64, 16, 16, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x25011722, 1754, 128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x25011723, 1756, 256, 32, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x25013F37, 1758, 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x26011922, 1764, 128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x26013733, 1765, 256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x26013F33, 1766, 256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x26013F37, 1768, 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x2C42502B, "1311",   8,  4,  2, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x2C40102B, "1313",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x2D01402B, "1342",   8,  4,  2, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x2D00002B, "1343",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
 
-    { 0x0004FF11, 2103,  32,  8,  8, 4096, SectorTable_2103, CHIP_VARIANT_LPC2XXX },
-    { 0xFFF0FF12, 2104, 128, 16, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
-    { 0xFFF0FF22, 2105, 128, 32, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
-    { 0xFFF0FF32, 2106, 128, 64, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
-    { 0x0201FF01, 2109,  64,  8,  8, 4096, SectorTable_2109, CHIP_VARIANT_LPC2XXX },
-    { 0x0101FF12, 2114, 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
-    { 0x0201FF12, 2119, 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
-    { 0x0101FF13, 2124, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    { 0x0201FF13, 2129, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    { 0x0002FF01, 2131,  32,  8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0002FF11, 2132,  64, 16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0002FF12, 2134, 128, 16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0002FF23, 2136, 256, 32, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0002FF25, 2138, 512, 32, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0402FF01, 2141,  32,  8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0402FF11, 2142,  64, 16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0402FF12, 2144, 128, 16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0402FF23, 2146, 256, 40, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0402FF25, 2148, 512, 40, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0301FF13, 2194, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    { 0x0301FF12, 2210,   0, 16,  0, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX }, /* table is a "don't care" */
-    { 0x0401FF12, 2212, 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
-    { 0x0601FF13, 2214, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    /*            2290; same id as the LPC2210 */
-    { 0x0401FF13, 2292, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    { 0x0501FF13, 2294, 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    { 0x00000000, 2361, 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x00000000, 2362, 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600F902, 2364, 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600E823, 2365, 256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600F923, 2366, 256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600E825, 2367, 512, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600F925, 2368, 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1700E825, 2377, 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1700FD25, 2378, 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1800F935, 2387, 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1800FF35, 2388, 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1500FF35, 2458, 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600FF30, 2460,   0, 98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600FF35, 2468, 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1701FF30, 2470,   0, 98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1701FF35, 2478, 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }
+    { 0x25001110, "1751",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x25001121, "1752",  64, 16, 16, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x25011722, "1754", 128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x25011723, "1756", 256, 32, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x25013F37, "1758", 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x26011922, "1764", 128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x26013733, "1765", 256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x26013F33, "1766", 256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+    { 0x26013F37, "1768", 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+
+    { 0x0004FF11, "2103",  32,  8,  8, 4096, SectorTable_2103, CHIP_VARIANT_LPC2XXX },
+    { 0xFFF0FF12, "2104", 128, 16, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
+    { 0xFFF0FF22, "2105", 128, 32, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
+    { 0xFFF0FF32, "2106", 128, 64, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
+    { 0x0201FF01, "2109",  64,  8,  8, 4096, SectorTable_2109, CHIP_VARIANT_LPC2XXX },
+    { 0x0101FF12, "2114", 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
+    { 0x0201FF12, "2119", 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
+    { 0x0101FF13, "2124", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    { 0x0201FF13, "2129", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    { 0x0002FF01, "2131",  32,  8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0002FF11, "2132",  64, 16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0002FF12, "2134", 128, 16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0002FF23, "2136", 256, 32, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0002FF25, "2138", 512, 32, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0402FF01, "2141",  32,  8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0402FF11, "2142",  64, 16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0402FF12, "2144", 128, 16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0402FF23, "2146", 256, 40, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0402FF25, "2148", 512, 40, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x0301FF13, "2194", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    { 0x0301FF12, "2210",   0, 16,  0, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX }, /* table is a "don't care" */
+    { 0x0401FF12, "2212", 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
+    { 0x0601FF13, "2214", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    /*            "2290"; same id as the LPC2210 */
+    { 0x0401FF13, "2292", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    { 0x0501FF13, "2294", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+    { 0x00000000, "2361", 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x00000000, "2362", 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600F902, "2364", 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600E823, "2365", 256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600F923, "2366", 256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600E825, "2367", 512, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600F925, "2368", 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1700E825, "2377", 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1700FD25, "2378", 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1800F935, "2387", 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1800FF35, "2388", 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1500FF35, "2458", 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600FF30, "2460",   0, 98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1600FF35, "2468", 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1701FF30, "2470",   0, 98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+    { 0x1701FF35, "2478", 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }
 };
 
 /***************************** PHILIPS Download *********************************/
@@ -478,7 +487,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
     else
 #endif
     {
-        for (nQuestionMarks = found = 0; !found && nQuestionMarks < 100; nQuestionMarks++)
+        for (nQuestionMarks = found = 0; !found && nQuestionMarks < IspEnvironment->nQuestionMarks; nQuestionMarks++)
         {
 #if defined INTEGRATED_IN_WIN_APP
             // allow calling application to abort when syncing takes too long
@@ -669,7 +678,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
         DebugPrintf(2, "unknown");
     }
     else {
-        DebugPrintf(2, "LPC%d, %d kiB ROM / %d kiB SRAM",
+        DebugPrintf(2, "LPC%s, %d kiB ROM / %d kiB SRAM",
             LPCtypes[IspEnvironment->DetectedDevice].Product,
             LPCtypes[IspEnvironment->DetectedDevice].FlashSize,
             LPCtypes[IspEnvironment->DetectedDevice].RAMSize);
@@ -1106,7 +1115,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
     {
         DebugPrintf(2, "Wait for restart, in %d seconds from now\n", WatchDogSeconds - (tDoneUpload - tStartUpload));
     }
-    else
+    else if(IspEnvironment->DoNotStart == 0)
     {
         DebugPrintf(2, "Now launching the brand new code\n");
         fflush(stdout);

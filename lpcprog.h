@@ -99,14 +99,14 @@ typedef enum
 
 typedef struct
 {
-    unsigned long id;
-    unsigned Product;
-    unsigned FlashSize;     /* in kiB, for informational purposes only */
-    unsigned RAMSize;       /* in kiB, for informational purposes only */
-    unsigned FlashSectors;  /* total number of sectors */
-    unsigned MaxCopySize;   /* maximum size that can be copied to Flash in a single command */
-    const unsigned int *SectorTable; /* pointer to a sector table with constant the sector sizes */
-    CHIP_VARIANT ChipVariant;
+    const unsigned long  id;
+    const unsigned char *Product;
+    const unsigned int   FlashSize;     /* in kiB, for informational purposes only */
+    const unsigned int   RAMSize;       /* in kiB, for informational purposes only */
+          unsigned int   FlashSectors;  /* total number of sectors */
+          unsigned int   MaxCopySize;   /* maximum size that can be copied to Flash in a single command */
+    const unsigned int  *SectorTable;   /* pointer to a sector table with constant the sector sizes */
+    const CHIP_VARIANT   ChipVariant;
 } LPC_DEVICE_TYPE;
 
 int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment);

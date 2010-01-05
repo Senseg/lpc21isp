@@ -139,6 +139,17 @@ typedef enum
 
 typedef unsigned char BINARY;               // Data type used for microcontroller
 
+/** Used to create list of files to read in. */
+typedef struct file_list FILE_LIST;
+
+/** Structure used to build list of input files. */
+struct file_list
+{
+    const char *name;       /**< The name of the input file.	*/
+    FILE_LIST *prev;        /**< The previous file name in the list.*/
+    char hex_flag;          /**< True if the input file is hex.	*/
+};
+
 typedef struct
 {
 #if !defined COMPILE_FOR_LPC21
@@ -146,12 +157,13 @@ typedef struct
     FILE_FORMAT_TYPE FileFormat;
     unsigned char ProgramChip;                // Normally set
 
-    int debug_level;
     unsigned char ControlLines;
     unsigned char ControlLinesSwapped;
     unsigned char ControlLinesInverted;
     unsigned char LogFile;
-    char *input_file;                   // The name of the file to get input from.
+    FILE_LIST *f_list;                  // List of files to read in.
+    int nQuestionMarks; // how many times to try to synchronise
+    int DoNotStart;
     char *serial_port;                  // Name of the serial port to use to
                                         // communicate with the microcontroller.
                                         // Read from the command line.
@@ -231,8 +243,6 @@ void DebugPrintf(int level, const char *fmt, ...);
 #endif
 
 void ClearSerialPortBuffers(ISP_ENVIRONMENT *IspEnvironment);
-static void ControlModemLines(ISP_ENVIRONMENT *IspEnvironment, unsigned char DTR, unsigned char RTS);
-static unsigned char Ascii2Hex(unsigned char c);
 
 #endif
 
@@ -273,12 +283,5 @@ void SendComPort(ISP_ENVIRONMENT *IspEnvironment, const char *s);
 void SendComPortBlock(ISP_ENVIRONMENT *IspEnvironment, const void *s, size_t n);
 int ReceiveComPortBlockComplete(ISP_ENVIRONMENT *IspEnvironment, void *block, size_t size, unsigned timeout);
 void ClearSerialPortBuffers(ISP_ENVIRONMENT *IspEnvironment);
-
-#ifdef COMPILE_FOR_WINDOWS
-static void SerialTimeoutSet(ISP_ENVIRONMENT *IspEnvironment, unsigned timeout_milliseconds);
-static int SerialTimeoutCheck(ISP_ENVIRONMENT *IspEnvironment);
-#endif // COMPILE_FOR_WINDOWS
-
-static void LoadFile(ISP_ENVIRONMENT *IspEnvironment);
 
 int lpctest(char* FileName);
