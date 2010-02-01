@@ -301,12 +301,19 @@ Change-History:
                   Added support for LPC11xx devices (not tested at all)
                   Changed Product in LPC_DEVICE_TYPE from number to string to distinguish new LPC11 devices
                   Changed "unsigned" to "unsigned int" in LPC_DEVICE_TYPE
+1.76   2010-02-01 Published test version without source code
+1.77   2010-02-01 Martin Maurer
+                  Corrected chip id of LPC1342 and LPC1343
+                  Added a new chip type for LPC11xx and LPC13xx microcontrollers
+                  Use higher area of RAM with LPC11xx and LPC13xx, because lower RAM is occupied by ISP
+                  Add code to lpcprog.c to read unique id, but not yet activate.
+                  Adapt block sizes for copying for each model of LPC11xx and LPC13xx
 */
 
 // Please don't use TABs in the source code !!!
 
 // Don't forget to update the version string that is on the next line
-#define VERSION_STR "1.75"
+#define VERSION_STR "1.77"
 
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 static char RxTmpBuf[256];        // save received data to this buffer for half-duplex

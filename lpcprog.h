@@ -9,7 +9,7 @@ Compiler:          Microsoft VC 6/7, GCC Cygwin, GCC Linux, GCC ARM ELF
 
 Author:            Martin Maurer (Martin.Maurer@clibb.de)
 
-Copyright:         (c) Martin Maurer 2003-2008, All rights reserved
+Copyright:         (c) Martin Maurer 2003-2010, All rights reserved
 Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.com
 
     This file is part of lpc21isp.
@@ -47,6 +47,12 @@ Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.c
 
 #define LPC_RAMSTART_LPC17XX    0x10000000L
 #define LPC_RAMBASE_LPC17XX     0x10000200L
+
+#define LPC_RAMSTART_LPC13XX    0x10000000L
+#define LPC_RAMBASE_LPC13XX     0x10000300L
+
+#define LPC_RAMSTART_LPC11XX    0x10000000L
+#define LPC_RAMBASE_LPC11XX     0x10000300L
 
 /* Return values used by PhilipsDownload(): reserving all values from 0x1000 to 0x1FFF */
 
@@ -95,6 +101,8 @@ typedef enum
   {
   CHIP_VARIANT_LPC2XXX,
   CHIP_VARIANT_LPC17XX,
+  CHIP_VARIANT_LPC13XX,
+  CHIP_VARIANT_LPC11XX
   } CHIP_VARIANT;
 
 typedef struct
