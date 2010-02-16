@@ -308,12 +308,15 @@ Change-History:
                   Use higher area of RAM with LPC11xx and LPC13xx, because lower RAM is occupied by ISP
                   Add code to lpcprog.c to read unique id, but not yet activate.
                   Adapt block sizes for copying for each model of LPC11xx and LPC13xx
+1.78   2010-02-16 Martin Maurer
+                  Corrected chip id of LPC1751
+                  Added support for LPC1759, LPC1767 and LPC1769
 */
 
 // Please don't use TABs in the source code !!!
 
 // Don't forget to update the version string that is on the next line
-#define VERSION_STR "1.77"
+#define VERSION_STR "1.78"
 
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 static char RxTmpBuf[256];        // save received data to this buffer for half-duplex
