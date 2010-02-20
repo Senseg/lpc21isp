@@ -529,7 +529,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
                 strippedsize--;
             }
 
-            sprintf(tmp_string, "StrippedAnswer(Length=%ld): '", strippedsize);
+            sprintf(tmp_string, "StrippedAnswer(Length=%d): '", strippedsize);
             DumpString(3, strippedAnswer, strippedsize, tmp_string);
 
             if (strcmp(strippedAnswer, "Bootloader\r\n") == 0 && IspEnvironment->TerminalOnly == 0)
@@ -751,7 +751,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
     {
         DebugPrintf(2, "Wiping Device. ");
 
-        sprintf(tmpString, "P %ld %ld\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
+        sprintf(tmpString, "P %d %d\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
 
         if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
         {
@@ -759,7 +759,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
         }
 
-        sprintf(tmpString, "E %ld %ld\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
+        sprintf(tmpString, "E %d %d\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
 
         if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
         {
@@ -772,7 +772,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
         //no wiping requested: erasing sector 0 first
         DebugPrintf(2, "Erasing sector 0 first, to invalidate checksum. ");
 
-        sprintf(tmpString, "P %ld %ld\n", 0, 0);
+        sprintf(tmpString, "P %d %d\n", 0, 0);
 
         if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
         {
@@ -780,7 +780,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
         }
 
-        sprintf(tmpString, "E %ld %ld\n", 0, 0);
+        sprintf(tmpString, "E %d %d\n", 0, 0);
 
         if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
         {
@@ -1103,7 +1103,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
                     //and the compare result may not be correct.
                     if (SectorStart + SectorOffset<64)
                     {
-                        sprintf(tmpString, "M %ld %ld %ld\n", 64, ReturnValueLpcRamBase(IspEnvironment) + (64 - SectorStart - SectorOffset), CopyLength-(64 - SectorStart - SectorOffset));
+                        sprintf(tmpString, "M %d %ld %ld\n", 64, ReturnValueLpcRamBase(IspEnvironment) + (64 - SectorStart - SectorOffset), CopyLength-(64 - SectorStart - SectorOffset));
                     }
                     else
                     {
@@ -1163,7 +1163,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
         }
         else
         {
-            printf("Internal Error %s %s\n", __FILE__, __LINE__);
+            printf("Internal Error %s %d\n", __FILE__, __LINE__);
             exit(1);
         }
 
@@ -1192,7 +1192,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             }
             else
             {
-                printf("Internal Error %s %s\n", __FILE__, __LINE__);
+                printf("Internal Error %s %d\n", __FILE__, __LINE__);
                 exit(1);
             }
 

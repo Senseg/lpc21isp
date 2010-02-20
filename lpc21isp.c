@@ -311,12 +311,18 @@ Change-History:
 1.78   2010-02-16 Martin Maurer
                   Corrected chip id of LPC1751
                   Added support for LPC1759, LPC1767 and LPC1769
+1.79   2010-02-19 Andrew Pines
+                  Added __APPLE__ flag to CFLAGS in Makefile to detect and handle OS X
+                  Added -Wall to Makefile to report warnings more comprehensively
+                  Added #define in lpc21isp.h to substitute strnicmp with strncasecmp (needed for Unix)
+                  Fixed a few format specifiers in lpcprog.c to eliminate some warnings
+
 */
 
 // Please don't use TABs in the source code !!!
 
 // Don't forget to update the version string that is on the next line
-#define VERSION_STR "1.78"
+#define VERSION_STR "1.79"
 
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
 static char RxTmpBuf[256];        // save received data to this buffer for half-duplex

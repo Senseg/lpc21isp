@@ -108,7 +108,7 @@ typedef enum
 typedef struct
 {
     const unsigned long  id;
-    const unsigned char *Product;
+    const char *Product;
     const unsigned int   FlashSize;     /* in kiB, for informational purposes only */
     const unsigned int   RAMSize;       /* in kiB, for informational purposes only */
           unsigned int   FlashSectors;  /* total number of sectors */

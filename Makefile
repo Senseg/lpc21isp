@@ -7,6 +7,16 @@ ifneq ($(findstring(freebsd, $(OSTYPE))),)
 CFLAGS+=-D__FREEBSD__
 endif
 
+ifeq ($(OSTYPE),)
+OSTYPE		= $(shell uname)
+endif
+
+ifneq ($(findstring Darwin,$(OSTYPE)),)
+CFLAGS+=-D__APPLE__
+endif
+
+CFLAGS	+= -Wall
+
 adprog.o: adprog.c $(GLOBAL_DEP)
 	$(CC) $(CDEBUG) $(CFLAGS) -c -o adprog.o adprog.c
 

@@ -249,6 +249,7 @@ void ClearSerialPortBuffers(ISP_ENVIRONMENT *IspEnvironment);
 
 #if defined COMPILE_FOR_LINUX
 #define stricmp strcasecmp
+#define strnicmp strncasecmp
 #endif // defined COMPILE_FOR_LINUX
 
 #ifndef O_BINARY
