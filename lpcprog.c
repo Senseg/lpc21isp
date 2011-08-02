@@ -1,15 +1,16 @@
 /******************************************************************************
 
-Project:           Portable command line ISP for Philips LPC2000 family
+Project:           Portable command line ISP for NXP LPC1000 / LPC2000 family
                    and Analog Devices ADUC70xx
 
 Filename:          lpcprog.c
 
-Compiler:          Microsoft VC 6/7, GCC Cygwin, GCC Linux, GCC ARM ELF
+Compiler:          Microsoft VC 6/7, Microsoft VS2008, Microsoft VS2010,
+                   GCC Cygwin, GCC Linux, GCC ARM ELF
 
 Author:            Martin Maurer (Martin.Maurer@clibb.de)
 
-Copyright:         (c) Martin Maurer 2003-2010, All rights reserved
+Copyright:         (c) Martin Maurer 2003-2011, All rights reserved
 Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.com
 
     This file is part of lpc21isp.
@@ -92,81 +93,122 @@ static int unsigned SectorTable_RAM[]  = { 65000 };
 
 static LPC_DEVICE_TYPE LPCtypes[] =
 {
-    { 0, 0, 0 },  /* unknown */
+   { 0, 0, 0, 0, 0, 0, 0, CHIP_VARIANT_NONE },  /* unknown */
 
-    { 0x041E502B, "1111.../101",   8,  2,  2, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-    { 0x0416502B, "1111.../201",   8,  4,  2, 2048, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-    { 0x042D502B, "1112.../101",  16,  2,  4, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-    { 0x0425502B, "1112.../201",  16,  4,  4, 2048, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-    { 0x0434502B, "1113.../201",  24,  4,  6, 2048, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-    { 0x0434102B, "1113.../301",  24,  8,  6, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-    { 0x0444502B, "1114.../201",  32,  4,  8, 2048, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-    { 0x0444102B, "1114.../301",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   // id, name of product, flash size, ram size, total number of sector, max copy size, sector table, chip variant
 
-    { 0x2C42502B, "1311",   8,  4,  2, 2048, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-    { 0x2C40102B, "1313",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-    { 0x3D01402B, "1342",   8,  4,  2, 2048, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-    { 0x3D00002B, "1343",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
+   { 0x2500102B, "1102",         32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
 
-    { 0x25001118, "1751",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x25001121, "1752",  64, 16, 16, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x25011722, "1754", 128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x25011723, "1756", 256, 32, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x25013F37, "1758", 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x25113737, "1759", 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x26011922, "1764", 128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x26013733, "1765", 256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x26013F33, "1766", 256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x26012837, "1767", 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x26013F37, "1768", 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-    { 0x26113F37, "1769", 512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x041E502B, "1111.../101",   8,  2,  2, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x2516D02B, "1111.../102",   8,  2,  2, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0416502B, "1111.../201",   8,  4,  2, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x2516902B, "1111.../202",   8,  4,  2, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x042D502B, "1112.../101",  16,  2,  4, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x2524D02B, "1112.../102",  16,  2,  4, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0425502B, "1112.../201",  16,  4,  4, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x2524902B, "1112.../202",  16,  4,  4, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0434502B, "1113.../201",  24,  4,  6, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x2532902B, "1113.../202",  24,  4,  6, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0434102B, "1113.../301",  24,  8,  6, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x2532102B, "1113.../302",  24,  8,  6, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0444502B, "1114.../201",  32,  4,  8, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x2540902B, "1114.../202",  32,  4,  8, 1024, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0444102B, "1114.../301",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x2540102B, "1114.../302",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
 
-    { 0x0004FF11, "2103",  32,  8,  8, 4096, SectorTable_2103, CHIP_VARIANT_LPC2XXX },
-    { 0xFFF0FF12, "2104", 128, 16, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
-    { 0xFFF0FF22, "2105", 128, 32, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
-    { 0xFFF0FF32, "2106", 128, 64, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
-    { 0x0201FF01, "2109",  64,  8,  8, 4096, SectorTable_2109, CHIP_VARIANT_LPC2XXX },
-    { 0x0101FF12, "2114", 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
-    { 0x0201FF12, "2119", 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
-    { 0x0101FF13, "2124", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    { 0x0201FF13, "2129", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    { 0x0002FF01, "2131",  32,  8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0002FF11, "2132",  64, 16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0002FF12, "2134", 128, 16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0002FF23, "2136", 256, 32, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0002FF25, "2138", 512, 32, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0402FF01, "2141",  32,  8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0402FF11, "2142",  64, 16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0402FF12, "2144", 128, 16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0402FF23, "2146", 256, 40, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0402FF25, "2148", 512, 40, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x0301FF13, "2194", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    { 0x0301FF12, "2210",   0, 16,  0, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX }, /* table is a "don't care" */
-    { 0x0401FF12, "2212", 128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
-    { 0x0601FF13, "2214", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    /*            "2290"; same id as the LPC2210 */
-    { 0x0401FF13, "2292", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    { 0x0501FF13, "2294", 256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
-    { 0x00000000, "2361", 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x00000000, "2362", 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600F902, "2364", 128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600E823, "2365", 256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600F923, "2366", 256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600E825, "2367", 512, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600F925, "2368", 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1700E825, "2377", 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1700FD25, "2378", 512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1800F935, "2387", 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1800FF35, "2388", 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1500FF35, "2458", 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600FF30, "2460",   0, 98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1600FF35, "2468", 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1701FF30, "2470",   0, 98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-    { 0x1701FF35, "2478", 512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }
+   { 0x1421102B, "11C12.../301",  16,  8,  4, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x1440102B, "11C14.../301",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x1431102B, "11C22.../301",  16,  8,  4, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x1430102B, "11C24.../301",  32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+
+   { 0x0364002B, "1224.../101",  32,  8,  4, 2048, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0364202B, "1224.../121",  48, 12, 32, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0365002B, "1225.../301",  64, 16, 32, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0365202B, "1225.../321",  80, 20, 32, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0366002B, "1226",         96, 24, 32, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+   { 0x0367002B, "1227",        128, 32, 32, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
+
+   { 0x2C42502B, "1311",          8,  4,  2, 1024, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
+   { 0x1816902B, "1311/01",       8,  4,  2, 1024, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
+   { 0x2C40102B, "1313",         32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
+   { 0x1830102B, "1313/01",      32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
+   { 0x3D01402B, "1342",         16,  4,  4, 1024, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
+   { 0x3D00002B, "1343",         32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
+
+   { 0x25001118, "1751",         32,  8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x25001121, "1752",         64, 16, 16, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x25011722, "1754",        128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x25011723, "1756",        256, 32, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x25013F37, "1758",        512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x25113737, "1759",        512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x26011922, "1764",        128, 32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x26013733, "1765",        256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x26013F33, "1766",        256, 64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x26012837, "1767",        512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x26013F37, "1768",        512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x26113F37, "1769",        512, 64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+
+   { 0x27011132, "1774",        128, 40, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x27191F43, "1776",        256, 80, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x27193747, "1777",        512, 96, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x27193F47, "1778",        512, 96, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x281D1743, "1785",        256, 80, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x281D1F43, "1786",        256, 80, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x281D3747, "1787",        512, 96, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+   { 0x281D3F47, "1788",        512, 96, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
+
+   { 0x0004FF11, "2103",         32,  8,  8, 4096, SectorTable_2103, CHIP_VARIANT_LPC2XXX },
+   { 0xFFF0FF12, "2104",        128, 16, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
+   { 0xFFF0FF22, "2105",        128, 32, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
+   { 0xFFF0FF32, "2106",        128, 64, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
+   { 0x0201FF01, "2109",         64,  8,  8, 4096, SectorTable_2109, CHIP_VARIANT_LPC2XXX },
+   { 0x0101FF12, "2114",        128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
+   { 0x0201FF12, "2119",        128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
+   { 0x0101FF13, "2124",        256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+   { 0x0201FF13, "2129",        256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+   { 0x0002FF01, "2131",         32,  8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0002FF11, "2132",         64, 16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0002FF12, "2134",        128, 16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0002FF23, "2136",        256, 32, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0002FF25, "2138",        512, 32, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0402FF01, "2141",         32,  8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0402FF11, "2142",         64, 16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0402FF12, "2144",        128, 16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0402FF23, "2146",        256, 40, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0402FF25, "2148",        512, 40, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0301FF13, "2194",        256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+   { 0x0301FF12, "2210",          0, 16,  0, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX }, /* table is a "don't care" */
+   { 0x0401FF12, "2212",        128, 16, 15, 8192, SectorTable_211x, CHIP_VARIANT_LPC2XXX },
+   { 0x0601FF13, "2214",        256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+   /*            "2290"; same id as the LPC2210 */
+   { 0x0401FF13, "2292",        256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+   { 0x0501FF13, "2294",        256, 16, 17, 8192, SectorTable_212x, CHIP_VARIANT_LPC2XXX },
+   { 0x00000000, "2361",        128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x00000000, "2362",        128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0603FB02, "2364",        128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }, /* From UM10211 Rev. 01 -- 6 July 2007 */
+   { 0x1600F902, "2364",        128, 34, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x1600E823, "2365",        256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0603FB23, "2366",        256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }, /* From UM10211 Rev. 01 -- 6 July 2007 */
+   { 0x1600F923, "2366",        256, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x1600E825, "2367",        512, 58, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0603FB25, "2368",        512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }, /* From UM10211 Rev. 01 -- 6 July 2007 */
+   { 0x1600F925, "2368",        512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x1700E825, "2377",        512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0703FF25, "2378",        512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }, /* From UM10211 Rev. 01 -- 6 July 2007 */
+   { 0x1600FD25, "2378",        512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }, /* From UM10211 Rev. 01 -- 29 October 2007 */
+   { 0x1700FD25, "2378",        512, 58, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x1700FF35, "2387",        512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }, /* From UM10211 Rev. 03 -- 25 August 2008 */
+   { 0x1800F935, "2387",        512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x1800FF35, "2388",        512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x1500FF35, "2458",        512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x1600FF30, "2460",          0, 98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x1600FF35, "2468",        512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x1701FF30, "2470",          0, 98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x1701FF35, "2478",        512, 98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }
 };
 
-/***************************** PHILIPS Download *********************************/
-/**  Download the file from the internal memory image to the philips microcontroller.
+/***************************** NXP Download *********************************/
+/**  Download the file from the internal memory image to the NXP microcontroller.
 *   This function is visible from outside if COMPILE_FOR_LPC21
 */
 
@@ -185,17 +227,17 @@ static int SendAndVerify(ISP_ENVIRONMENT *IspEnvironment, const char *Command,
 
 
 
-/***************************** PhilipsOutputErrorMessage ***********************/
+/***************************** NxpOutputErrorMessage ***********************/
 /**  Given an error number find and print the appropriate error message.
 \param [in] ErrorNumber The number of the error.
 */
 #if defined COMPILE_FOR_LPC21
 
-#define PhilipsOutputErrorMessage(in)        // Cleanly remove this feature from the embedded version !!
+#define NxpOutputErrorMessage(in)        // Cleanly remove this feature from the embedded version !!
 
 #else
 
-static void PhilipsOutputErrorMessage(unsigned char ErrorNumber)
+static void NxpOutputErrorMessage(unsigned char ErrorNumber)
 {
     switch (ErrorNumber)
     {
@@ -291,7 +333,7 @@ static void PhilipsOutputErrorMessage(unsigned char ErrorNumber)
         break;
     }
 
-    //DebugPrintf(1, "error (%u), see  PhilipsOutputErrorMessage() in lpc21isp.c for help \n\r", ErrorNumber);
+    //DebugPrintf(1, "error (%u), see  NxpOutputErrorMessage() in lpc21isp.c for help \n\r", ErrorNumber);
 }
 #endif // !defined COMPILE_FOR_LPC21
 
@@ -332,13 +374,13 @@ static unsigned char GetAndReportErrorNumber(const char *Answer)
         i++;
     }
 
-    PhilipsOutputErrorMessage(Result);
+    NxpOutputErrorMessage(Result);
 
     return Result;
 }
 
 
-int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
+int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 {
     unsigned long realsize;
     char Answer[128];
@@ -363,8 +405,6 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
     unsigned long ivt_CRC;          // CRC over interrupt vector table
     unsigned long block_CRC;
     time_t tStartUpload=0, tDoneUpload=0;
-    long WatchDogSeconds = 0;
-    int WaitForWatchDog = 0;
     char tmp_string[64];
     char * cmdstr;
 
@@ -405,80 +445,6 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
                               sendbuf10, sendbuf11, sendbuf12, sendbuf13, sendbuf14,
                               sendbuf15, sendbuf16, sendbuf17, sendbuf18, sendbuf19};
 #endif
-
-    if (!IspEnvironment->DetectOnly)
-    {
-        // Build up uuencode table
-        uuencode_table[0] = 0x60;           // 0x20 is translated to 0x60 !
-
-        for (i = 1; i < 64; i++)
-        {
-            uuencode_table[i] = (char)(0x20 + i);
-        }
-
-        if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
-        {
-            // Patch 0x14, otherwise it is not running and jumps to boot mode
-
-            ivt_CRC = 0;
-
-            // Clear the vector at 0x14 so it doesn't affect the checksum:
-            for (i = 0; i < 4; i++)
-            {
-                IspEnvironment->BinaryContent[i + 0x14] = 0;
-            }
-
-            // Calculate a native checksum of the little endian vector table:
-            for (i = 0; i < (4 * 8);) {
-                ivt_CRC += IspEnvironment->BinaryContent[i++];
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
-            }
-
-            /* Negate the result and place in the vector at 0x14 as little endian
-            * again. The resulting vector table should checksum to 0. */
-            ivt_CRC = (unsigned long) (0 - ivt_CRC);
-            for (i = 0; i < 4; i++)
-            {
-                IspEnvironment->BinaryContent[i + 0x14] = (unsigned char)(ivt_CRC >> (8 * i));
-            }
-
-            DebugPrintf(3, "Position 0x14 patched: ivt_CRC = 0x%08lX\n", ivt_CRC);
-        }
-        else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX ||
-                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX ||
-                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX)
-        {
-            // Patch 0x1C, otherwise it is not running and jumps to boot mode
-
-            ivt_CRC = 0;
-
-            // Clear the vector at 0x1C so it doesn't affect the checksum:
-            for (i = 0; i < 4; i++)
-            {
-                IspEnvironment->BinaryContent[i + 0x1C] = 0;
-            }
-
-            // Calculate a native checksum of the little endian vector table:
-            for (i = 0; i < (4 * 8);) {
-                ivt_CRC += IspEnvironment->BinaryContent[i++];
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
-            }
-
-            /* Negate the result and place in the vector at 0x1C as little endian
-            * again. The resulting vector table should checksum to 0. */
-            ivt_CRC = (unsigned long) (0 - ivt_CRC);
-            for (i = 0; i < 4; i++)
-            {
-                IspEnvironment->BinaryContent[i + 0x1C] = (unsigned char)(ivt_CRC >> (8 * i));
-            }
-
-            DebugPrintf(3, "Position 0x1C patched: ivt_CRC = 0x%08lX\n", ivt_CRC);
-        }
-    }
 
     DebugPrintf(2, "Synchronizing (ESC to abort)");
 
@@ -531,31 +497,6 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
 
             sprintf(tmp_string, "StrippedAnswer(Length=%d): '", strippedsize);
             DumpString(3, strippedAnswer, strippedsize, tmp_string);
-
-            if (strcmp(strippedAnswer, "Bootloader\r\n") == 0 && IspEnvironment->TerminalOnly == 0)
-            {
-                long chars, xtal;
-                unsigned long ticks;
-                chars = (17 * IspEnvironment->BinaryLength + 1) / 10;
-                WatchDogSeconds = (10 * chars + 5) / atol(IspEnvironment->baud_rate) + 10;
-                xtal = atol(IspEnvironment->StringOscillator) * 1000;
-                ticks = (unsigned long)WatchDogSeconds * ((xtal + 15) / 16);
-                DebugPrintf(2, "Entering ISP; re-synchronizing (watchdog = %ld seconds)\n", WatchDogSeconds);
-                sprintf(temp, "T %lu\r\n", ticks);
-                SendComPort(IspEnvironment, temp);
-                ReceiveComPort(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 1,100);
-                if (strcmp(Answer, "OK\r\n") != 0)
-                {
-                    ResetKeyboardTtySettings();
-                    DebugPrintf(2, "No answer on 'watchdog timer set'\n");
-                    return (NO_ANSWER_WDT);
-                }
-                SendComPort(IspEnvironment, "G 10356\r\n");
-                Sleep(200);
-                nQuestionMarks = 0;
-                WaitForWatchDog = 1;
-                continue;
-            }
 
             tStartUpload = time(NULL);
 
@@ -689,6 +630,85 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
             LPCtypes[IspEnvironment->DetectedDevice].RAMSize);
     }
     DebugPrintf(2, " (0x%X)\n", Pos);//strippedAnswer);
+
+    if (!IspEnvironment->DetectOnly)
+    {
+        // Build up uuencode table
+        uuencode_table[0] = 0x60;           // 0x20 is translated to 0x60 !
+
+        for (i = 1; i < 64; i++)
+        {
+            uuencode_table[i] = (char)(0x20 + i);
+        }
+
+        if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
+        {
+            // Patch 0x14, otherwise it is not running and jumps to boot mode
+
+            ivt_CRC = 0;
+
+            // Clear the vector at 0x14 so it doesn't affect the checksum:
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x14] = 0;
+            }
+
+            // Calculate a native checksum of the little endian vector table:
+            for (i = 0; i < (4 * 8);) {
+                ivt_CRC += IspEnvironment->BinaryContent[i++];
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
+            }
+
+            /* Negate the result and place in the vector at 0x14 as little endian
+            * again. The resulting vector table should checksum to 0. */
+            ivt_CRC = (unsigned long) (0 - ivt_CRC);
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x14] = (unsigned char)(ivt_CRC >> (8 * i));
+            }
+
+            DebugPrintf(3, "Position 0x14 patched: ivt_CRC = 0x%08lX\n", ivt_CRC);
+        }
+        else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX ||
+                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX ||
+                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX)
+        {
+            // Patch 0x1C, otherwise it is not running and jumps to boot mode
+
+            ivt_CRC = 0;
+
+            // Clear the vector at 0x1C so it doesn't affect the checksum:
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x1C] = 0;
+            }
+
+            // Calculate a native checksum of the little endian vector table:
+            for (i = 0; i < (4 * 8);) {
+                ivt_CRC += IspEnvironment->BinaryContent[i++];
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
+            }
+
+            /* Negate the result and place in the vector at 0x1C as little endian
+            * again. The resulting vector table should checksum to 0. */
+            ivt_CRC = (unsigned long) (0 - ivt_CRC);
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x1C] = (unsigned char)(ivt_CRC >> (8 * i));
+            }
+
+            DebugPrintf(3, "Position 0x1C patched: ivt_CRC = 0x%08lX\n", ivt_CRC);
+        }
+        else
+        {
+          DebugPrintf(1, "Internal error: wrong chip variant %d (detected device %d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant, IspEnvironment->DetectedDevice);
+          exit(1);
+        }
+    }
 
 #if 0
     DebugPrintf(2, "Read Unique ID:\n");
@@ -1142,11 +1162,7 @@ int PhilipsDownload(ISP_ENVIRONMENT *IspEnvironment)
     else
         DebugPrintf(2, "Download Finished... taking %d seconds\n", tDoneUpload - tStartUpload);
 
-    if (WaitForWatchDog)
-    {
-        DebugPrintf(2, "Wait for restart, in %d seconds from now\n", WatchDogSeconds - (tDoneUpload - tStartUpload));
-    }
-    else if(IspEnvironment->DoNotStart == 0)
+    if(IspEnvironment->DoNotStart == 0)
     {
         DebugPrintf(2, "Now launching the brand new code\n");
         fflush(stdout);
