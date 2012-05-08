@@ -631,7 +631,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
     }
     DebugPrintf(2, " (0x%X)\n", Pos);//strippedAnswer);
 
-    if (!IspEnvironment->DetectOnly)
+    if (IspEnvironment->ProgramChip)
     {
         // Build up uuencode table
         uuencode_table[0] = 0x60;           // 0x20 is translated to 0x60 !
@@ -749,7 +749,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
             if (*next == '\r') next++;
             if (*next == '\n') next++;
         }
-        printf("%d.%d.%d.%d\n", items[0], items[1], items[2], items[3]); // TBD
+        printf("%8.8x%8.8x%8.8x%8.8x\n", items[0], items[1], items[2], items[3]); // TBD
     }
 
     /* In case of a download to RAM, use full RAM for downloading
@@ -764,8 +764,12 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         LPCtypes[IspEnvironment->DetectedDevice].SectorTable  = SectorTable_RAM;
         SectorTable_RAM[0] = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
     }
+
     if (IspEnvironment->DetectOnly)
         return (0);
+
+    if (IspEnvironment->ProgramChip == 0)
+    {
 
 
     // Start with sector 1 and go upward... Sector 0 containing the interrupt vectors
@@ -1178,9 +1182,11 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
     else
         DebugPrintf(2, "Download Finished... taking %d seconds\n", tDoneUpload - tStartUpload);
 
+    } /* IspEnvironment->ProgramChip */
+
     if(IspEnvironment->DoNotStart == 0)
     {
-        DebugPrintf(2, "Now launching the brand new code\n");
+        DebugPrintf(2, "Now launching the code\n");
         fflush(stdout);
 
         if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)

@@ -1207,10 +1207,18 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                 continue;
             }
 
+            if (stricmp(argv[i], "-DoNotProgram") == 0)
+            {
+                IspEnvironment->ProgramChip = 0;
+                DebugPrintf(3, "Flashing disabled.\n");
+                continue;
+            }
+
             if (stricmp(argv[i], "-printserialnumber") == 0)
             {
                 IspEnvironment->PrintSerialNumber = 1;
                 DebugPrintf(3, "Print serial number.\n");
+                continue;
             }
 
             if (stricmp(argv[i], "-halfduplex") == 0)
@@ -2062,7 +2070,7 @@ int PerformActions(ISP_ENVIRONMENT *IspEnvironment)
     ClearSerialPortBuffers(IspEnvironment);
 
     /* Perform the requested download.                              */
-    if (IspEnvironment->ProgramChip || IspEnvironment->DetectOnly)
+    if (IspEnvironment->ProgramChip || IspEnvironment->DetectOnly || IspEnvironment->PrintSerialNumber)
     {
         switch (IspEnvironment->micro)
         {
