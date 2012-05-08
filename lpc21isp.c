@@ -389,7 +389,7 @@ static void OpenSerialPort(ISP_ENVIRONMENT *IspEnvironment)
 
     if (IspEnvironment->hCom == INVALID_HANDLE_VALUE)
     {
-        DebugPrintf(1, "Can't open COM-Port %s ! - Error: %ld\n", IspEnvironment->serial_port, GetLastError());
+        ErrorPrintf("Can't open COM-Port %s ! - Error: %ld\n", IspEnvironment->serial_port, GetLastError());
         exit(2);
     }
 
@@ -412,7 +412,7 @@ static void OpenSerialPort(ISP_ENVIRONMENT *IspEnvironment)
 
     if (SetCommState(IspEnvironment->hCom, &dcb) == 0)
     {
-        DebugPrintf(1, "Can't set baudrate %s ! - Error: %ld", IspEnvironment->baud_rate, GetLastError());
+        ErrorPrintf("Can't set baudrate %s ! - Error: %ld", IspEnvironment->baud_rate, GetLastError());
         exit(3);
     }
 
@@ -452,7 +452,7 @@ static void OpenSerialPort(ISP_ENVIRONMENT *IspEnvironment)
     if (IspEnvironment->fdCom < 0)
     {
         int err = errno;
-        DebugPrintf(1, "Can't open COM-Port %s ! (Error: %dd (0x%X))\n", IspEnvironment->serial_port, err, err);
+        ErrorPrintf("Can't open COM-Port %s ! (Error: %dd (0x%X))\n", IspEnvironment->serial_port, err, err);
         exit(2);
     }
 
@@ -470,10 +470,10 @@ static void OpenSerialPort(ISP_ENVIRONMENT *IspEnvironment)
 
 #if defined(__FreeBSD__) || defined(__OpenBSD__)
 
-    if(cfsetspeed(&IspEnvironment->newtio,(speed_t) strtol(IspEnvironment->baud_rate,NULL,10))) {
-                  DebugPrintf(1, "baudrate %s not supported\n", IspEnvironment->baud_rate);
-                  exit(3);
-              };
+    if (cfsetspeed(&IspEnvironment->newtio,(speed_t) strtol(IspEnvironment->baud_rate,NULL,10))) {
+        ErrorPrintf(, "baudrate %s not supported\n", IspEnvironment->baud_rate);
+        exit(3);
+    };
 #else
 
 #ifdef __APPLE__
@@ -514,7 +514,7 @@ static void OpenSerialPort(ISP_ENVIRONMENT *IspEnvironment)
 
           default:
               {
-                  DebugPrintf(1, "unknown baudrate %s\n", IspEnvironment->baud_rate);
+                  ErrorPrintf("unknown baudrate %s\n", IspEnvironment->baud_rate);
                   exit(3);
               }
     }
@@ -534,8 +534,8 @@ static void OpenSerialPort(ISP_ENVIRONMENT *IspEnvironment)
     tcflush(IspEnvironment->fdCom, TCIFLUSH);
     if(tcsetattr(IspEnvironment->fdCom, TCSANOW, &IspEnvironment->newtio))
     {
-       DebugPrintf(1, "Could not change serial port behaviour (wrong baudrate?)\n");
-       exit(3);
+        ErrorPrintf("Could not change serial port behaviour (wrong baudrate?)\n");
+        exit(3);
     }
 
 }
@@ -1290,6 +1290,8 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
 
     if (argc < 5)
     {
+        ErrorPrintf("lpc21isp [Options] file[ file[ ...]] comport baudrate Oscillator_in_kHz\n");
+
         DebugPrintf(2, "\n"
                        "Portable command line ISP\n"
                        "for NXP LPC1000 / LPC2000 family and Analog Devices ADUC 70xx\n"
@@ -1337,7 +1339,7 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
         // If StringOscillator is bigger than 100 MHz, there seems to be something wrong
         if (strlen(IspEnvironment->StringOscillator) > 5)
         {
-            DebugPrintf(1, "Invalid crystal frequency %s\n", IspEnvironment->StringOscillator);
+            ErrorPrintf("Invalid crystal frequency %s\n", IspEnvironment->StringOscillator);
             exit(1);
         }
     }
@@ -1405,7 +1407,7 @@ static unsigned char Ascii2Hex(unsigned char c)
         return (unsigned char)(c - 'a' + 10);
     }
 
-    DebugPrintf(1, "Wrong Hex-Nibble %c (%02X)\n", c, c);
+    ErrorPrintf("Wrong Hex-Nibble %c (%02X)\n", c, c);
     exit(1);
 
     return 0;  // this "return" will never be reached, but some compilers give a warning if it is not present
@@ -1506,7 +1508,8 @@ void ReadHexFile(ISP_ENVIRONMENT *IspEnvironment)
 
             if (FileContent[Pos] != ':')
             {
-                DebugPrintf(1, "Missing start of record (':') wrong byte %c / %02X\n", FileContent[Pos], FileContent[Pos]);
+                ErrorPrintf("Missing start of record (':') wrong byte %c / %02X\n",
+                        FileContent[Pos], FileContent[Pos]);
                 exit(1);
             }
 
@@ -1631,7 +1634,7 @@ void ReadHexFile(ISP_ENVIRONMENT *IspEnvironment)
                 {
                     if ((RealAddress & LPC_FLASHMASK) != IspEnvironment->BinaryOffset)
                     {
-                        DebugPrintf(1, "New Extended Linear Address Record [04] out of memory range\n"
+                        ErrorPrintf("New Extended Linear Address Record [04] out of memory range\n"
                                        "Current Memory starts at: 0x%08X, new Address is: 0x%08X",
                                        IspEnvironment->BinaryOffset, RealAddress);
                         exit(1);
@@ -1761,7 +1764,8 @@ static int LoadFile(ISP_ENVIRONMENT *IspEnvironment, const char *filename, int F
 
             if (FileContent[Pos] != ':')
             {
-                DebugPrintf(1, "Missing start of record (':') wrong byte %c / %02X\n", FileContent[Pos], FileContent[Pos]);
+                ErrorPrintf("Missing start of record (':') wrong byte %c / %02X\n",
+                        FileContent[Pos], FileContent[Pos]);
                 exit(1);
             }
 
@@ -2003,7 +2007,8 @@ static int LoadFiles(ISP_ENVIRONMENT *IspEnvironment)
     ret_val = LoadFiles1(IspEnvironment, IspEnvironment->f_list);
     if( ret_val != 0)
     {
-		exit(1); // return ret_val;
+        ErrorPrintf("LoadFiles failed.  Exiting.\n");
+        exit(1); // return ret_val;
     }
 
 	DebugPrintf( 2, "Image size : %ld\n", IspEnvironment->BinaryLength);
@@ -2071,6 +2076,7 @@ int PerformActions(ISP_ENVIRONMENT *IspEnvironment)
         if (downloadResult != 0)
         {
             CloseSerialPort(IspEnvironment);
+            ErrorPrintf("Non-zero download reasult: %d.  Exiting.\n", downloadResult);
             exit(downloadResult);
         }
     }

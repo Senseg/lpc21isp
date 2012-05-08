@@ -705,8 +705,9 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         }
         else
         {
-          DebugPrintf(1, "Internal error: wrong chip variant %d (detected device %d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant, IspEnvironment->DetectedDevice);
-          exit(1);
+            ErrorPrintf("Internal error: wrong chip variant %d (detected device %d)\n",
+                    LPCtypes[IspEnvironment->DetectedDevice].ChipVariant, IspEnvironment->DetectedDevice);
+            exit(1);
         }
     }
 
@@ -1179,7 +1180,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         }
         else
         {
-            printf("Internal Error %s %d\n", __FILE__, __LINE__);
+            ErrorPrintf("Internal Error %s %d\n", __FILE__, __LINE__);
             exit(1);
         }
 
@@ -1208,7 +1209,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
             }
             else
             {
-                printf("Internal Error %s %d\n", __FILE__, __LINE__);
+                ErrorPrintf("Internal Error %s %d\n", __FILE__, __LINE__);
                 exit(1);
             }
 
@@ -1244,7 +1245,7 @@ unsigned long ReturnValueLpcRamStart(ISP_ENVIRONMENT *IspEnvironment)
   {
     return LPC_RAMSTART_LPC11XX;
   }
-  printf("Error in ReturnValueLpcRamStart (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
+  ErrorPrintf("Error in ReturnValueLpcRamStart (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
   exit(1);
 }
 
@@ -1267,6 +1268,6 @@ unsigned long ReturnValueLpcRamBase(ISP_ENVIRONMENT *IspEnvironment)
   {
     return LPC_RAMBASE_LPC11XX;
   }
-  printf("Error in ReturnValueLpcRamBase (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
+  ErrorPrintf("Error in ReturnValueLpcRamBase (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
   exit(1);
 }

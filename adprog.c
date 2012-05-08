@@ -94,7 +94,7 @@ static void AnalogDevicesSync(ISP_ENVIRONMENT *IspEnvironment)
         ClearSerialPortBuffers(IspEnvironment);
     }
 
-    DebugPrintf(1, "No (or unacceptable) answer on sync attempt\n");
+    ErrorPrintf("No (or unacceptable) answer on sync attempt\n");
     exit(4);
 }
 
@@ -141,22 +141,22 @@ static void AnalogDevicesFormPacket(ISP_ENVIRONMENT *IspEnvironment,
     /* if any of these tests fail.                                  */
     if ((no_bytes < 0) || (no_bytes > 250))
     {
-        DebugPrintf(1,
+        ErrorPrintf(
             "The number of bytes (%d) passed to FormPacket is invalid.\n",
             no_bytes);
-        exit(-1);
+        exit(4);
     }
     if ((data == 0) && (no_bytes != 0))
     {
-        DebugPrintf(1,
+        ErrorPrintf(
             "A null pointer to data paased to FormPacket when data was expected.\n");
-        exit(-1);
+        exit(4);
     }
     if (packet == 0)
     {
-        DebugPrintf(1,
+        ErrorPrintf(
             "A null packet pointer was passed to FormPacket.\n");
-        exit(-1);
+        exit(4);
     }
 
     checksum = 0;               /*  Checksum starts at zero.            */
@@ -247,8 +247,8 @@ static void AnalogDevicesSendPacket(ISP_ENVIRONMENT *IspEnvironment,
         }
     } while (retry < 3);
 
-    DebugPrintf(1, "Send packet failed\n");
-    exit(-1);
+    ErrorPrintf("Send packet failed\n");
+    exit(5);
 }
 
 /***************************** AnalogDevicesErase ***********************/

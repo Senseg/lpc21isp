@@ -88,7 +88,7 @@ Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.c
 #include <strings.h>
 #include <sys/ioctl.h>
 extern void Sleep(unsigned long MilliSeconds);
-#define TRACE(x) printf("%s",x)
+#define TRACE(x) fprintf(stderr, "%s",x)
 #endif // defined COMPILE_FOR_LINUX
 
 #if defined COMPILE_FOR_LINUX || defined COMPILE_FOR_CYGWIN
@@ -219,6 +219,7 @@ typedef struct
 
 #if defined COMPILE_FOR_LPC21
 
+#define ErrorPrintf(...)
 #define DebugPrintf(in, ...)
 
 #else
@@ -226,6 +227,7 @@ extern int debug_level;
 
 #if defined INTEGRATED_IN_WIN_APP
 
+#define ErrorPrintf(fmt, ...) AppDebugPrintf(1, fmt, ##__VA_ARGS__)
 #define DebugPrintf AppDebugPrintf
 void AppDebugPrintf(int level, const char *fmt, ...);
 
@@ -239,6 +241,7 @@ int AppSyncing(int trials);
 void AppWritten(int size);
 
 #else
+#define ErrorPrintf(fmt, ...) DebugPrintf(0, fmt, ##__VA_ARGS__)
 void DebugPrintf(int level, const char *fmt, ...);
 //#define DebugPrintf(level, ...) if (level <= debug_level) { TRACE( __VA_ARGS__ ); }
 #endif
