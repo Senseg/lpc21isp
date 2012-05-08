@@ -13,9 +13,16 @@ endif
 
 ifneq ($(findstring Darwin,$(OSTYPE)),)
 CFLAGS+=-D__APPLE__
+# Use LLVM on newer Mac OS X
+CC = cc
+# -static does now longer work (easily) at newer versions of Mac OS X: Use the default (dynamic)
+# See e.g. http://stackoverflow.com/questions/844819/how-to-static-link-on-os-x and
+# https://developer.apple.com/library/ios/#qa/qa1118/_index.html
+else
+CFLAGS+=-static
 endif
 
-CFLAGS	+= -Wall -static
+CFLAGS	+= -Wall
 
 adprog.o: adprog.c $(GLOBAL_DEP)
 	$(CC) $(CDEBUG) $(CFLAGS) -c -o adprog.o adprog.c
