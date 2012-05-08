@@ -1207,6 +1207,12 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                 continue;
             }
 
+            if (stricmp(argv[i], "-printserialnumber") == 0)
+            {
+                IspEnvironment->PrintSerialNumber = 1;
+                DebugPrintf(3, "Print serial number.\n");
+            }
+
             if (stricmp(argv[i], "-halfduplex") == 0)
             {
                 IspEnvironment->HalfDuplex = 1;

@@ -711,7 +711,6 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         }
     }
 
-#if 0
     DebugPrintf(2, "Read Unique ID:\n");
 
     cmdstr = "N\n";
@@ -735,7 +734,23 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
     {
         DebugPrintf(2, "unknown\n");
     }
-#endif // 0
+
+#define READUID_RESULT_ITEMS 4
+    if (IspEnvironment->PrintSerialNumber)
+    {
+        int items[READUID_RESULT_ITEMS];
+        int i;
+        char *next;
+
+        next = strippedAnswer;
+        for (i = 0; i < READUID_RESULT_ITEMS; i++)
+        {
+            items[i] = strtol(next, &next, 10);
+            if (*next == '\r') next++;
+            if (*next == '\n') next++;
+        }
+        printf("%d.%d.%d.%d\n", items[0], items[1], items[2], items[3]); // TBD
+    }
 
     /* In case of a download to RAM, use full RAM for downloading
     * set the flash parameters to full RAM also.

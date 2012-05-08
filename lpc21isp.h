@@ -176,6 +176,8 @@ typedef struct
     unsigned char LocalEcho;
 #endif
 
+    unsigned char PrintSerialNumber;    // Print out the 128 bits serial number
+
     unsigned char HalfDuplex;           // Only used for LPC Programming
     unsigned char DetectOnly;
     unsigned char WipeDevice;
