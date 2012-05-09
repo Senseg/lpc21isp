@@ -768,7 +768,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
     if (IspEnvironment->DetectOnly)
         return (0);
 
-    if (IspEnvironment->ProgramChip == 0)
+    if (IspEnvironment->ProgramChip)
     {
 
 
