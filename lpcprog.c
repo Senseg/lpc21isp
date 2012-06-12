@@ -728,7 +728,11 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
     if (strncmp(Answer + strlen(cmdstr), "0\r\n", 3) == 0)
     {
         strippedAnswer = Answer + strlen(cmdstr) + 3;
+#if 0 /* "We should also fix the flashing script so that it doesn't print out misleading figures */
         DebugPrintf(2, strippedAnswer);
+#else
+        DebugPrintf(2, "succeeded\n");
+#endif
     }
     else
     {
