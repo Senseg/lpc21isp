@@ -1249,6 +1249,13 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                 continue;
             }
 
+            if (stricmp(argv[i], "-postreset") == 0)
+            {
+                IspEnvironment->PostReset = 1;
+                DebugPrintf(2, "Reset after flashing.\n");
+                continue;
+            }
+
 #ifdef INTEGRATED_IN_WIN_APP
             if (stricmp(argv[i], "-nosync") == 0)
             {
@@ -1339,6 +1346,7 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                        "                      (0=true/assert/set, 1=false/deassert/clear).\n"
                        "         -verify      Verify the data in Flash after every writes to\n"
                        "                      sector. To detect errors in writing to Flash ROM\n"
+                       "         -postreset   Always reset the device after flashing.\n"
                        "         -logfile     for enabling logging of terminal output to lpc21isp.log\n"
                        "         -halfduplex  use halfduplex serial communication (i.e. with K-Line)\n"
                        "         -ADARM       for downloading to an Analog Devices\n"
@@ -2095,7 +2103,7 @@ int PerformActions(ISP_ENVIRONMENT *IspEnvironment)
         }
     }
 
-    if (IspEnvironment->StartAddress == 0 || IspEnvironment->TerminalOnly)
+    if (IspEnvironment->StartAddress == 0 || IspEnvironment->TerminalOnly || IspEnvironment->PostReset)
     {
         /* Only reset target if startaddress = 0
         * Otherwise stay with the running program as started in Download()

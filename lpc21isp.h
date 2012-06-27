@@ -182,6 +182,7 @@ typedef struct
     unsigned char DetectOnly;
     unsigned char WipeDevice;
     unsigned char Verify;
+    unsigned char PostReset;            // Always reset after flashing
     int           DetectedDevice;       /* index in LPCtypes[] array */
     char *baud_rate;                    /**< Baud rate to use on the serial
                                            * port communicating with the
