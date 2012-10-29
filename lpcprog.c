@@ -717,7 +717,23 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 
     SendComPort(IspEnvironment, cmdstr);
 
+    /* Bugfix by Lauri (2012-10-29):
+     * LPC111x replies with four response codes (see UM10398, page 424).
+     * That means we'll receive 6 lines, including the command (echo is on)
+     * and the return code.
+     * Original code (the #if 0'ed version) expected to receive only 5 lines,
+     * which creates problems on faster machines..
+     *
+     * I don't know if the "N" command returns four response codes on
+     * all LPC parts, i.e. is this fix universal or specific to LPC111x?
+    */
+#if 0
+    /* Buggy code (at least with LPC111x): */
     ReceiveComPort(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 5,5000);
+#else
+    /* the fix: */
+    ReceiveComPort(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 6,5000);
+#endif
 
     if (strncmp(Answer, cmdstr, strlen(cmdstr)) != 0)
     {
