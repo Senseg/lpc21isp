@@ -1214,6 +1214,13 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                 continue;
             }
 
+            if (stricmp(argv[i], "-ResetOnly") == 0)
+            {
+                IspEnvironment->ProgramChip = 0;
+                IspEnvironment->PostReset = 1;
+                DebugPrintf(3, "Just reset and start target.\n");
+            }
+
             if (stricmp(argv[i], "-printserialnumber") == 0)
             {
                 IspEnvironment->PrintSerialNumber = 1;
@@ -1311,7 +1318,7 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
 
     if (argc < 5)
     {
-        ErrorPrintf("lpc21isp [Options] file[ file[ ...]] comport baudrate Oscillator_in_kHz\n");
+        ErrorPrintf("lpc21isp [Options] file[ file[ ...]] serial-port baudrate Oscillator_in_kHz\n");
 
         DebugPrintf(2, "\n"
                        "Portable command line ISP\n"
@@ -1321,37 +1328,39 @@ static void ReadArguments(ISP_ENVIRONMENT *IspEnvironment, unsigned int argc, ch
                        "Portions Copyright (c) by Aeolus Development 2004, www.aeolusdevelopment.com\n"
                        "\n");
 
-        DebugPrintf(1, "Syntax:  lpc21isp [Options] file[ file[ ...]] comport baudrate Oscillator_in_kHz\n\n"
+        DebugPrintf(1, "Syntax:  lpc21isp [Options] [file [file ...]] serial-port baudrate Oscillator_in_kHz\n\n"
                        "Example: lpc21isp test.hex com1 115200 14746\n\n"
-                       "Options: -bin         for uploading binary file\n"
-                       "         -hex         for uploading file in intel hex format (default)\n"
-                       "         -term        for starting terminal after upload\n"
-                       "         -termonly    for starting terminal without an upload\n"
-                       "         -localecho   for local echo in terminal\n"
-                       "         -detectonly  detect only used LPC chiptype (NXPARM only)\n"
-                       "         -debug0      for no debug\n"
-                       "         -debug3      for progress info only\n"
-                       "         -debug5      for full debug\n"
-                       "         -donotstart  do not start MCU after download\n"
-                       "         -try<n>      try n times to synchronise\n"
-                       "         -wipe        Erase entire device before upload\n"
-                       "         -control     for controlling RS232 lines for easier booting\n"
-                       "                      (Reset = DTR, EnableBootLoader = RTS)\n"
+                       "Options: -bin           for uploading binary file\n"
+                       "         -hex           for uploading file in intel hex format (default)\n"
+                       "         -term          for starting terminal after upload\n"
+                       "         -termonly      for starting terminal without an upload\n"
+                       "         -localecho     for local echo in terminal\n"
+                       "         -detectonly    detect only used LPC chiptype (NXPARM only)\n"
+                       "         -debug0        for no debug\n"
+                       "         -debug3        for progress info only\n"
+                       "         -debug5        for full debug\n"
+                       "         -donotstart    do not start MCU after download\n"
+                       "         -donotprogram  do not flash device\n"
+                       "         -try<n>        try n times to synchronise\n"
+                       "         -wipe          Erase entire device before upload\n"
+                       "         -control       for controlling RS232 lines for easier booting\n"
+                       "                        (Reset = DTR, EnableBootLoader = RTS)\n"
 #ifdef INTEGRATED_IN_WIN_APP
-                       "         -nosync      Do not synchronize device via '?'\n"
+                       "         -nosync        Do not synchronize device via '?'\n"
 #endif
-                       "         -controlswap swap RS232 control lines\n"
-                       "                      (Reset = RTS, EnableBootLoader = DTR)\n"
-                       "         -controlinv  Invert state of RTS & DTR \n"
-                       "                      (0=true/assert/set, 1=false/deassert/clear).\n"
-                       "         -verify      Verify the data in Flash after every writes to\n"
-                       "                      sector. To detect errors in writing to Flash ROM\n"
-                       "         -postreset   Always reset the device after flashing.\n"
-                       "         -logfile     for enabling logging of terminal output to lpc21isp.log\n"
-                       "         -halfduplex  use halfduplex serial communication (i.e. with K-Line)\n"
-                       "         -ADARM       for downloading to an Analog Devices\n"
-                       "                      ARM microcontroller ADUC70xx\n"
-                       "         -NXPARM      for downloading to a NXP LPC1xxx/LPC2xxx (default)\n");
+                       "         -controlswap   swap RS232 control lines\n"
+                       "                        (Reset = RTS, EnableBootLoader = DTR)\n"
+                       "         -controlinv    Invert state of RTS & DTR \n"
+                       "                        (0=true/assert/set, 1=false/deassert/clear).\n"
+                       "         -verify        Verify the data in Flash after every writes to\n"
+                       "                        sector. To detect errors in writing to Flash ROM\n"
+                       "         -postreset     Always reset the device after flashing.\n"
+                       "         -resetonly     Just reset and start target.\n"
+                       "         -logfile       for enabling logging of terminal output to lpc21isp.log\n"
+                       "         -halfduplex    use halfduplex serial communication (i.e. with K-Line)\n"
+                       "         -ADARM         for downloading to an Analog Devices\n"
+                       "                        ARM microcontroller ADUC70xx\n"
+                       "         -NXPARM        for downloading to a NXP LPC1xxx/LPC2xxx (default)\n");
 
         exit(1);
     }
@@ -1987,6 +1996,12 @@ static int LoadFile(ISP_ENVIRONMENT *IspEnvironment, const char *filename, int F
 static int LoadFiles1(ISP_ENVIRONMENT *IspEnvironment, const FILE_LIST *file)
 {
     int ret_val;
+
+    if(!file)
+    {
+        ErrorPrintf("No files to load.\n");
+        return -1;
+    }
 
     if( file->prev != 0)
     {
