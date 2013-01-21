@@ -869,6 +869,7 @@ static void ControlModemLines(ISP_ENVIRONMENT *IspEnvironment, unsigned char DTR
     }
 
 #if defined COMPILE_FOR_LINUX
+#if (TARGET_PC != armv6l)
     int status;
 
     if (ioctl(IspEnvironment->fdCom, TIOCMGET, &status) == 0)
@@ -903,6 +904,30 @@ static void ControlModemLines(ISP_ENVIRONMENT *IspEnvironment, unsigned char DTR
     {
         DebugPrintf(1, "ioctl get failed\n");
     }
+
+#else  //TARGET_PC != armv6l
+    int fd;
+    char k[10];
+
+    sprintf(k, "%d", DTR);
+    fd = open("/sys/class/gpio/gpio18/value", O_WRONLY);
+    if (fd == -1)
+    {
+        DebugPrintf(1, "Opening GPIO18 (DTR)  value file failed\n");
+    }
+    write(fd, k, 1);
+    close(fd);
+
+    sprintf(k, "%d", RTS);
+    fd = open("/sys/class/gpio/gpio17/value", O_WRONLY);
+    if (fd == -1)
+    {
+        DebugPrintf(1, "Opening GPIO17 (RTS) value file failed\n");
+    }
+    write(fd, k, 1);
+    close(fd);
+
+#endif //TARGET_PC != armv6l
 
 #endif // defined COMPILE_FOR_LINUX
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN

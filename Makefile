@@ -3,6 +3,8 @@ all:      lpc21isp
 GLOBAL_DEP  = adprog.h lpc21isp.h lpcprog.h lpcterm.h
 CC = gcc
 
+MACHINE = $(shell uname -m)
+
 ifneq ($(findstring(freebsd, $(OSTYPE))),)
 CFLAGS+=-D__FREEBSD__
 endif
@@ -23,6 +25,7 @@ CFLAGS+=-static
 endif
 
 CFLAGS	+= -Wall
+CFLAGS  += -DTARGET_PC=$(MACHINE)
 
 adprog.o: adprog.c $(GLOBAL_DEP)
 	$(CC) $(CDEBUG) $(CFLAGS) -c -o adprog.o adprog.c
