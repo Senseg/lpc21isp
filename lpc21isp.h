@@ -32,13 +32,16 @@ Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.c
 
 // #define INTEGRATED_IN_WIN_APP
 
+#define XSTR(x) STR(x)
+#define STR(x) #x
+
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #define COMPILE_FOR_WINDOWS
 #define COMPILED_FOR "Windows"
 #elif defined(__CYGWIN__)
 #define COMPILE_FOR_CYGWIN
 #define COMPILED_FOR "Cygwin"
-#elif (defined(__arm__) || defined(__thumb__)) && (TARGET_PC != armv6l)
+#elif (defined(__arm__) || defined(__thumb__)) && (!defined(__raspi__))
 #define COMPILE_FOR_LPC21
 #define COMPILED_FOR "ARM"
 #define printf iprintf

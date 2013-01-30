@@ -25,7 +25,9 @@ CFLAGS+=-static
 endif
 
 CFLAGS	+= -Wall
-CFLAGS  += -DTARGET_PC=$(MACHINE)
+ifeq ($(MACHINE),armv6l)
+CFLAGS+=-D__raspi__
+endif
 
 adprog.o: adprog.c $(GLOBAL_DEP)
 	$(CC) $(CDEBUG) $(CFLAGS) -c -o adprog.o adprog.c

@@ -869,7 +869,8 @@ static void ControlModemLines(ISP_ENVIRONMENT *IspEnvironment, unsigned char DTR
     }
 
 #if defined COMPILE_FOR_LINUX
-#if (TARGET_PC != armv6l)
+#ifndef __raspi__
+#pragma message "Building DTR and RTS full UART based control code"
     int status;
 
     if (ioctl(IspEnvironment->fdCom, TIOCMGET, &status) == 0)
@@ -905,7 +906,8 @@ static void ControlModemLines(ISP_ENVIRONMENT *IspEnvironment, unsigned char DTR
         DebugPrintf(1, "ioctl get failed\n");
     }
 
-#else  //TARGET_PC != armv6l
+#else  //__raspi__
+#pragma message "Building DTR and RTS GPIO based control code"
     int fd;
     char k[10];
 
@@ -913,7 +915,7 @@ static void ControlModemLines(ISP_ENVIRONMENT *IspEnvironment, unsigned char DTR
     fd = open("/sys/class/gpio/gpio18/value", O_WRONLY);
     if (fd == -1)
     {
-        DebugPrintf(1, "Opening GPIO18 (DTR)  value file failed\n");
+        DebugPrintf(1, "Opening GPIO18 (DTR) value file failed\n");
     }
     write(fd, k, 1);
     close(fd);
@@ -927,7 +929,7 @@ static void ControlModemLines(ISP_ENVIRONMENT *IspEnvironment, unsigned char DTR
     write(fd, k, 1);
     close(fd);
 
-#endif //TARGET_PC != armv6l
+#endif //__raspi__
 
 #endif // defined COMPILE_FOR_LINUX
 #if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
